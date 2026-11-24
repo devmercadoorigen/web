@@ -1,0 +1,18 @@
+node_modules
+dist
+.taste-skill
+
+# Secretos y variables de entorno
+.env
+.env.*
+!.env.example
+
+# Supabase local
+supabase/.temp
+supabase/.branches
+supabase/functions/.env
+
+# Datos personales (habeas data): nunca al repositorio
+supabase/seed/private/
+private/
+*.csv
