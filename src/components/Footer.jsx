@@ -56,14 +56,6 @@ export function Footer() {
           <span>© 2026 Mercado Origen · Huila, Colombia{XMAS && <> · <span className="xm-greet">¡Feliz Navidad y próspero 2027!</span></>}</span>
           <span><Link to="/tratamiento-de-datos">Tratamiento de datos</Link> · <Link to="/tratamiento-de-datos">Privacidad</Link> · <a href="https://www.sic.gov.co" target="_blank" rel="noreferrer">SIC</a></span>
         </div>
-        <p className="credits">
-          Fotos de colecciones abiertas vía Wikimedia Commons:{' '}
-          <a href="https://commons.wikimedia.org/w/index.php?curid=56936008">Surabastos Neiva</a> (Javier Lopez, CC BY 3.0),{' '}
-          <a href="https://commons.wikimedia.org/w/index.php?curid=182446190">Finca cafetera en Pitalito</a> (Jhysus, CC BY-SA 4.0),{' '}
-          <a href="https://commons.wikimedia.org/wiki/File:Parque_Arqueol%C3%B3gico_de_San_Agust%C3%ADn-Mesita_A_12.jpg">San Agustín, Mesita A</a> (Bernard Gagnon, CC BY-SA 4.0),{' '}
-          <a href="https://commons.wikimedia.org/wiki/File:Mazorca_de_cacao.jpg">Mazorca de cacao</a> (Chocolate Baure, CC BY-SA 4.0),{' '}
-          <a href="https://commons.wikimedia.org/wiki/File:Iglesia_de_Villavieja,_Huila_-_panoramio.jpg">Iglesia de Villavieja</a> (CarlosE Duarte, CC BY 3.0).
-        </p>
       </div>
     </footer>
   );
