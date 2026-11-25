@@ -5,7 +5,7 @@ import { UserMenu } from '../features/auth/UserMenu.jsx';
 import { SearchBox } from '../features/search/SearchBox.jsx';
 import { RichText, useSite } from '../features/site/SiteProvider.jsx';
 import { HashLink } from './HashLink.jsx';
-import { Garland, LogoHat, XMAS, XMAS_NEWS } from '../features/xmas/Christmas.jsx';
+import { Garland, XMAS, XMAS_NEWS } from '../features/xmas/Christmas.jsx';
 import { Icon } from './ui.jsx';
 
 const DEFAULT_NEWS = [
@@ -65,11 +65,11 @@ export function Header() {
       <div className="wrap top-in">
         {isHome ? (
           <a className="logo" href="#inicio">
-            <img src="/brand/logo-horizontal.svg" width="180" height="50" alt="Mercado Origen — Productos de origen del Huila" fetchpriority="high" /><LogoHat />
+            <img src="/brand/logo-horizontal-navidad.webp" width="128" height="52" alt="Mercado Origen — Productos de origen del Huila" fetchpriority="high" />
           </a>
         ) : (
           <Link className="logo" to="/">
-            <img src="/brand/logo-horizontal.svg" width="180" height="50" alt="Mercado Origen — Productos de origen del Huila" fetchpriority="high" /><LogoHat />
+            <img src="/brand/logo-horizontal-navidad.webp" width="128" height="52" alt="Mercado Origen — Productos de origen del Huila" fetchpriority="high" />
           </Link>
         )}
         <nav className="main" aria-label="Principal">

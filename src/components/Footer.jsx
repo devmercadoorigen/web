@@ -2,7 +2,7 @@ import { Link } from 'react-router';
 import { useSite } from '../features/site/SiteProvider.jsx';
 import { whatsappLink } from '../lib/format.js';
 import { HashLink } from './HashLink.jsx';
-import { LogoHat, XMAS } from '../features/xmas/Christmas.jsx';
+import { XMAS } from '../features/xmas/Christmas.jsx';
 import { Icon, Tricolor } from './ui.jsx';
 
 export function Footer() {
@@ -16,8 +16,7 @@ export function Footer() {
         <div className="foot-top">
           <div className="foot-brand">
             <span className="foot-logo">
-              <img src="/brand/logo-vertical.svg" width="120" height="137" alt="Mercado Origen, productos de origen del Huila" loading="lazy" />
-              <LogoHat />
+              <img src="/brand/logo-vertical-navidad.webp" width="120" height="182" alt="Mercado Origen, productos de origen del Huila" loading="lazy" />
             </span>
             <p>Plataforma para la promoción de la cultura, el agro y el emprendimiento del Huila. <b>Auténtico, cercano, orgulloso y de origen.</b></p>
             <div className="social">
