@@ -1,0 +1,76 @@
+/* ---------- Navidad (solo cuando <html class="xmas">) ---------- */
+
+/* Nieve */
+.xm-snow { position: fixed; inset: 0; z-index: 35; pointer-events: none; overflow: hidden; }
+.xm-snow i { position: absolute; top: -12px; border-radius: 50%; background: #fff; box-shadow: 0 0 6px rgba(150, 190, 170, 0.9); opacity: 0.85; animation: xm-fall linear infinite; }
+@keyframes xm-fall {
+  from { transform: translate3d(0, -10vh, 0); }
+  to { transform: translate3d(var(--drift, 0), 110vh, 0); }
+}
+
+/* Franja del inicio: Papá Noel cruza su propio carril */
+.xm-banner { padding: 28px 0 8px; }
+.xm-banner-in { position: relative; overflow: hidden; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); align-items: center; gap: 24px; min-height: 270px; padding: 34px 0 0 44px; border-radius: var(--r-xl, 32px); color: #fff;
+  background: radial-gradient(120% 140% at 100% 0%, #0b7a3b 0%, #064823 55%, #04361a 100%); box-shadow: var(--sh-2); isolation: isolate; }
+.xm-banner-in::before { content: ''; position: absolute; inset: 0; z-index: -1; opacity: 0.5;
+  background: radial-gradient(2px 2px at 20px 30px, #fff 99%, transparent) 0 0 / 120px 90px, radial-gradient(1.5px 1.5px at 70px 60px, #fff 99%, transparent) 0 0 / 160px 110px; }
+.xm-banner-copy { position: relative; z-index: 2; display: grid; gap: 10px; justify-items: start; padding-bottom: 34px; }
+.xm-banner-kicker { font-size: 13px; font-weight: 900; letter-spacing: 0.14em; text-transform: uppercase; color: #fcc005; }
+.xm-banner h2 { margin: 0; font-size: clamp(28px, 3vw, 40px); line-height: 1.05; color: #fff; }
+.xm-banner p { margin: 0 0 6px; max-width: 46ch; color: #dcefe2; font-weight: 600; }
+.xm-lane { position: relative; align-self: end; height: 200px; overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
+.xm-lane::after { content: ''; position: absolute; left: 0; right: 0; bottom: 18px; height: 22px; border-radius: 50% 50% 0 0 / 100% 100% 0 0; background: #f4f8f5; opacity: 0.9; }
+.xm-walker { position: absolute; z-index: 1; bottom: 14px; left: 0; width: 280px; height: auto; animation: xm-walk 13s linear infinite; }
+/* left en % se mide sobre el carril: cruza completo en cualquier ancho */
+@keyframes xm-walk { from { left: -300px; } to { left: 100%; } }
+@media (max-width: 860px) {
+  .xm-banner-in { grid-template-columns: 1fr; padding: 28px 0 0 24px; gap: 0; }
+  .xm-banner-copy { padding: 0 24px 10px 0; }
+  .xm-lane { height: 150px; }
+  .xm-walker { width: 200px; animation-duration: 10s; }
+  .xm-lane { margin-left: -24px; }
+}
+@media (prefers-reduced-motion: reduce) { .xm-walker { animation: none; left: 50%; translate: -50% 0; } }
+
+/* Luces bajo el header */
+.xm-garland { position: absolute; left: 0; right: 0; bottom: -13px; height: 16px; display: flex; justify-content: space-between; padding: 0 8px; pointer-events: none; overflow: hidden;
+  background: radial-gradient(120% 14px at 50% -6px, transparent 60%, rgba(6, 72, 35, 0.55) 62%, transparent 66%) 0 0 / 34px 16px repeat-x; }
+.xm-garland i { width: 7px; height: 11px; margin-top: 3px; border-radius: 50% 50% 45% 45%; background: #d62839; box-shadow: 0 0 8px 1px currentColor; color: #d62839; animation: xm-twinkle 1.6s ease-in-out infinite alternate; }
+.xm-garland i:nth-child(4n + 2) { background: #fcc005; color: #fcc005; animation-delay: -0.4s; }
+.xm-garland i:nth-child(4n + 3) { background: #0b9a4a; color: #0b9a4a; animation-delay: -0.8s; }
+.xm-garland i:nth-child(4n) { background: #e9f4ff; color: #bfe2ff; animation-delay: -1.2s; }
+.xm-garland i:nth-child(n + 31) { display: none; }
+@media (min-width: 900px) { .xm-garland i:nth-child(n + 31) { display: block; } }
+@keyframes xm-twinkle { from { opacity: 0.45; filter: saturate(0.6); } to { opacity: 1; filter: saturate(1.2); } }
+
+/* Gorro en el logo */
+.logo { position: relative; }
+.xm-hat { position: absolute; width: 36px; left: -12px; top: -13px; filter: drop-shadow(0 2px 2px rgba(0,0,0,.12)); transform: rotate(-18deg); pointer-events: none; }
+.is-scrolled .xm-hat { width: 30px; top: -11px; }
+@media (max-width: 680px) { .xm-hat { width: 23px; left: -7px; top: -8px; } }
+
+/* Hero: etiqueta navideña */
+.xm-tag { display: inline-flex; align-items: center; gap: 8px; margin-left: 8px; padding: 8px 14px; border-radius: 999px; background: #d62839; color: #fff; font-weight: 900; font-size: 14px; box-shadow: 0 10px 24px -12px rgba(214, 40, 57, 0.9); }
+@media (max-width: 680px) { .xm-tag { margin: 8px 0 0; } }
+
+/* Kits: moño de regalo en cada tarjeta */
+.xmas .kit::before { content: ''; position: absolute; z-index: 3; top: -14px; left: 50%; width: 64px; height: 30px; translate: -50% 0; pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 30'%3E%3Cpath d='M32 22C22 4 6 4 8 16s20 8 24 6zM32 22C42 4 58 4 56 16s-20 8-24 6z' fill='%23d62839'/%3E%3Ccircle cx='32' cy='21' r='6' fill='%23a50d26'/%3E%3C/svg%3E") center / contain no-repeat; }
+
+/* Pie: nieve acumulada y saludo */
+.xmas .foot { position: relative; }
+.xmas .foot::before { content: ''; position: absolute; left: 0; right: 0; top: -18px; height: 22px; pointer-events: none;
+  background: radial-gradient(14px 11px at 14px 100%, #fff 98%, transparent) 0 100% / 28px 22px repeat-x, radial-gradient(22px 14px at 22px 100%, #fff 98%, transparent) 9px 100% / 44px 22px repeat-x; filter: drop-shadow(0 -2px 2px rgba(6, 72, 35, 0.06)); }
+.xm-greet { display: inline-flex; align-items: center; gap: 8px; color: #d62839; font-weight: 900; }
+
+/* Copos en los títulos de sección */
+.xmas .kicker::after { content: '❄'; margin-left: 8px; color: #8fc9e8; font-size: 0.95em; }
+
+@media (prefers-reduced-motion: reduce) {
+  .xm-garland i { animation: none; }
+}
+
+/* Gorro en el logo del pie (logo vertical, la manija del carrito queda arriba a la izquierda) */
+.foot-logo { position: relative; display: inline-block; }
+.foot-logo .xm-hat { width: 46px; left: -16px; top: -18px; }

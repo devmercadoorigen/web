@@ -1,0 +1,99 @@
+{
+ "/img/cafe.jpg": {
+  "w": 808,
+  "h": 418,
+  "widths": [
+   480,
+   808
+  ]
+ },
+ "/img/found/finca-cafetera-pitalito.jpg": {
+  "w": 1920,
+  "h": 1266,
+  "widths": [
+   480,
+   960,
+   1600
+  ]
+ },
+ "/img/found/iglesia-villavieja.jpg": {
+  "w": 1920,
+  "h": 2793,
+  "widths": [
+   480,
+   960,
+   1600
+  ]
+ },
+ "/img/found/mazorca-cacao.jpg": {
+  "w": 1920,
+  "h": 2899,
+  "widths": [
+   480,
+   960,
+   1600
+  ]
+ },
+ "/img/found/rio-magdalena-gigante.jpg": {
+  "w": 1920,
+  "h": 1280,
+  "widths": [
+   480,
+   960,
+   1600
+  ]
+ },
+ "/img/found/san-agustin-mesita-a.jpg": {
+  "w": 1920,
+  "h": 1280,
+  "widths": [
+   480,
+   960,
+   1600
+  ]
+ },
+ "/img/found/surabastos-neiva.jpg": {
+  "w": 1920,
+  "h": 1280,
+  "widths": [
+   480,
+   960,
+   1600
+  ]
+ },
+ "/img/nevado.jpg": {
+  "w": 1200,
+  "h": 900,
+  "widths": [
+   480,
+   960,
+   1200
+  ]
+ },
+ "/img/san-agustin.jpg": {
+  "w": 1200,
+  "h": 900,
+  "widths": [
+   480,
+   960,
+   1200
+  ]
+ },
+ "/img/sanjuanero.jpg": {
+  "w": 700,
+  "h": 394,
+  "widths": [
+   480,
+   700
+  ]
+ },
+ "/img/tatacoa.jpg": {
+  "w": 1920,
+  "h": 1280,
+  "widths": [
+   480,
+   960,
+   1600
+  ]
+ }
+}

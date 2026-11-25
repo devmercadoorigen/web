@@ -1,16 +1,29 @@
 import { useId, useState } from 'react';
 
 const LABELS = { bar: 'Chocolate', ball: 'Chocolate de mesa', jar: 'Miel natural', achira: 'Achiras', tea: 'Té natural', swim: 'Resortwear' };
-const short = (s = '') => s.replace(/s*(Chocolatería|Chocolate|Resortwear)s*/gi, ' ').trim().toUpperCase().slice(0, 14);
+// Marca corta para el empaque: palabras completas hasta 14 letras ("MACA JOYAS").
+const short = (s = '') => {
+  const words = s.replace(/\s*(Chocolatería|Chocolate|Resortwear)\s*/gi, ' ').trim().toUpperCase().split(/\s+/);
+  let out = '';
+  for (const w of words) {
+    const next = out ? `${out} ${w}` : w;
+    if (next.length > 14) break;
+    out = next;
+  }
+  out = out.replace(/\s+(Y|DE|DEL|LA|EL|LOS|LAS|&)$/, '');   // sin conectores sueltos al final
+  return out || words[0]?.slice(0, 14) || '';
+};
 
 // Empaques dibujados en SVG mientras llegan las fotos reales de cada producto.
-function Mockup({ art, colors, maker, uid }) {
+function Mockup({ art, colors, maker, uid, label: customLabel }) {
   const [bg, fg] = colors;
   const g = (n) => `${uid}-${n}`;
   const brand = short(maker);
-  const label = LABELS[art];
+  const label = customLabel || LABELS[art];
   const T = { fontFamily: 'Nunito, sans-serif', textAnchor: 'middle' };
   const bs = brand.length > 10 ? 7 : 8.5;
+  // Etiquetas largas ("Bourbon Rosado") en letra más pequeña para que quepan.
+  const ls = label && label.length > 13 ? 8 : 10;
 
   const pieces = {
     bar: (
@@ -23,7 +36,7 @@ function Mockup({ art, colors, maker, uid }) {
         <rect x="62" y="96" width="76" height="58" rx="5" fill="#FFF8EC" />
         <text x="100" y="113" {...T} fontSize={bs} fontWeight="900" fill={fg}>{brand}</text>
         <rect x="80" y="118" width="40" height="1.5" fill="#F2B705" />
-        <text x="100" y="132" {...T} fontSize="10" fontWeight="900" fill="#2F3A33">{label}</text>
+        <text x="100" y="132" {...T} fontSize={ls} fontWeight="900" fill="#2F3A33">{label}</text>
         <text x="100" y="145" {...T} fontSize="6.5" fontWeight="700" fill="#5E6B62">HECHO EN EL HUILA</text>
       </>
     ),
@@ -74,7 +87,7 @@ function Mockup({ art, colors, maker, uid }) {
         <path d="M100 66 c18 -2 26 14 18 28 c-16 4 -26 -10 -18 -28z" fill="#6BA539" />
         <path d="M100 66 c-2 12 4 22 18 28" stroke="#FFF8EC" strokeWidth="1.5" fill="none" />
         <rect x="62" y="110" width="76" height="48" rx="5" fill="#FFF8EC" />
-        <text x="100" y="128" {...T} fontSize="10" fontWeight="900" fill="#2F3A33">{label}</text>
+        <text x="100" y="128" {...T} fontSize={ls} fontWeight="900" fill="#2F3A33">{label}</text>
         <text x="100" y="142" {...T} fontSize="7" fontWeight="800" fill={fg}>{brand}</text>
       </>
     ),
@@ -107,11 +120,15 @@ function Mockup({ art, colors, maker, uid }) {
   );
 }
 
-export function ProductArt({ art, colors, image, maker = '', alt = '' }) {
+export function ProductArt({ art, colors, image, thumb, maker = '', alt = '', artLabel, sizes = '(max-width: 560px) 50vw, 320px' }) {
   const [failed, setFailed] = useState(false);
   const uid = 'm' + useId().replace(/[^a-zA-Z0-9]/g, '');
-  if (image && !failed) return <img className="art-img" src={image} alt={alt} loading="lazy" onError={() => setFailed(true)} />;
-  return <Mockup art={art} colors={colors} maker={maker} uid={uid} />;
+  if (image && !failed) {
+    // Miniatura de 400 px para tarjetas; la grande solo si la pantalla la necesita.
+    const srcSet = thumb && thumb !== image ? `${thumb} 400w, ${image} 1200w` : undefined;
+    return <img className="art-img" src={thumb || image} srcSet={srcSet} sizes={srcSet ? sizes : undefined} alt={alt} loading="lazy" decoding="async" onError={() => setFailed(true)} />;
+  }
+  return <Mockup art={art} colors={colors} maker={maker} uid={uid} label={artLabel} />;
 }
 
 export function Photo({ src, alt, className = '' }) {
@@ -152,6 +169,10 @@ const ICONS = {
   facebook: <path d="M14 8h3V4h-3a4 4 0 0 0-4 4v2H7v4h3v6h4v-6h3l1-4h-4V8.5c0-.3.2-.5.5-.5z" />,
   tiktok: <path d="M14 4v10.5a3.5 3.5 0 1 1-3.5-3.5M14 4c.5 2.5 2.3 4 5 4" />,
   mountain: <path d="M3 19 9.5 8l4 6 2-3L21 19z" />,
+  eye: <><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z" /><circle cx="12" cy="12" r="3" /></>,
+  eyeOff: <><path d="M10.6 5.1A10.7 10.7 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4.1M6.6 6.6A17.4 17.4 0 0 0 2 12s3.6 7 10 7a10 10 0 0 0 5.4-1.6" /><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2M3 3l18 18" /></>,
+  mail: <><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 6 9-6" /></>,
+  logout: <><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3" /><path d="M10 17l-5-5 5-5M5 12h11" /></>,
   sun: <><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" /></>,
 };
 

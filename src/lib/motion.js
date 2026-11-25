@@ -4,6 +4,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
 
 gsap.registerPlugin(ScrollTrigger);
+// En celulares la barra de direcciones cambia el alto al hacer scroll: no recalcular por eso.
+ScrollTrigger.config({ ignoreMobileResize: true });
 
 export const reduced = () => typeof window !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -12,7 +14,10 @@ export const getLenis = () => lenis;
 
 // Desplaza suavemente hasta un selector, compensando el header fijo.
 export function scrollToTarget(target, offset = -96) {
-  const el = typeof target === 'string' ? document.querySelector(target) : target;
+  let el = target;
+  if (typeof target === 'string') {
+    try { el = document.querySelector(target); } catch { return; }
+  }
   if (!el) return;
   if (lenis) lenis.scrollTo(el, { offset, duration: 1.2 });
   else window.scrollTo({ top: el.getBoundingClientRect().top + scrollY + offset, behavior: reduced() ? 'auto' : 'smooth' });
@@ -30,7 +35,8 @@ export function useSmoothScroll() {
     const onClick = (e) => {
       const a = e.target.closest('a[href^="#"]');
       if (!a || a.getAttribute('href').length < 2) return;
-      const el = document.querySelector(a.getAttribute('href'));
+      let el = null;
+      try { el = document.querySelector(a.getAttribute('href')); } catch { return; }
       if (!el) return;
       e.preventDefault();
       scrollToTarget(el);
@@ -93,14 +99,16 @@ export function useGlobalAnimations(deps = []) {
         });
       });
     });
-    // Las fotos cambian la altura de la página al cargar: recalcula los disparadores
-    const refresh = () => ScrollTrigger.refresh();
-    requestAnimationFrame(refresh);
+    // Las fotos cambian la altura de la página al cargar: recalcula los disparadores,
+    // agrupando las llamadas (cada recálculo mide toda la página).
+    let timer;
+    const refresh = () => { clearTimeout(timer); timer = setTimeout(() => ScrollTrigger.refresh(), 200); };
+    refresh();
     window.addEventListener('load', refresh);
     document.fonts?.ready.then(refresh);
     const imgs = [...document.images].filter((i) => !i.complete);
     imgs.forEach((i) => i.addEventListener('load', refresh, { once: true }));
-    return () => { window.removeEventListener('load', refresh); ctx.revert(); };
+    return () => { clearTimeout(timer); window.removeEventListener('load', refresh); ctx.revert(); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
 }

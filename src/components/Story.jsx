@@ -1,33 +1,35 @@
-import { AMBASSADORS, ZONES } from '../data/catalog.js';
-import { scrollToTarget } from '../lib/motion.js';
+import { Link } from 'react-router';
+import { useSite } from '../features/site/SiteProvider.jsx';
 import { Icon } from './ui.jsx';
+import { Img } from './Img.jsx';
 
-const initials = (name) => name.split(' ').filter((w) => w.length > 2).slice(0, 2).map((w) => w[0]).join('');
-
-function AmbCard({ a, onShop }) {
-  const z = ZONES[a.zone];
+function AmbCard({ a }) {
+  const z = a.zone;
   return (
     <article className="amb">
       <div className="amb-top">
-        <span className="amb-ava" style={{ background: z.fill, color: z.label }}>{initials(a.name)}</span>
+        {a.avatar_url
+          ? <img className="amb-ava" src={a.avatar_url} alt="" width="54" height="54" loading="lazy" />
+          : <span className="amb-ava" style={{ background: z?.fill_color, color: z?.label_color }}>{a.initials}</span>}
         <div>
-          <b>{a.name}</b>
-          <span><Icon name="pin" size={13} stroke={2.4} />{a.town} · {z.name.replace('Zona ', '')}</span>
+          <b>{a.brand_name}</b>
+          <span><Icon name="pin" size={13} stroke={2.4} />{a.municipality?.name} · {z?.name}</span>
         </div>
       </div>
-      <p>{a.story}</p>
+      <p>{a.short_description}</p>
       <div className="amb-foot">
         {a.award ? <span className="amb-award"><Icon name="award" size={14} stroke={2.2} />{a.award}</span> : <span />}
-        <button type="button" onClick={() => { onShop(a.zone); scrollToTarget('#tienda'); }}>Ver productos <Icon name="arrow" size={15} stroke={2.4} /></button>
+        <Link to={`/embajador/${a.slug}`}>Ver productos <Icon name="arrow" size={15} stroke={2.4} /></Link>
       </div>
     </article>
   );
 }
 
 // Dos cintas de embajadores que avanzan en sentidos opuestos (se pausan al pasar el cursor).
-export function Ambassadors({ onShopZone }) {
-  const half = Math.ceil(AMBASSADORS.length / 2);
-  const rows = [AMBASSADORS, [...AMBASSADORS.slice(half), ...AMBASSADORS.slice(0, half)]];
+export function Ambassadors() {
+  const { ambassadors } = useSite();
+  const half = Math.ceil(ambassadors.length / 2);
+  const rows = [ambassadors, [...ambassadors.slice(half), ...ambassadors.slice(0, half)]];
   return (
     <section id="embajadores" className="ambs">
       <div className="wrap sec-head split-head">
@@ -36,15 +38,18 @@ export function Ambassadors({ onShopZone }) {
           <h2 data-anim="up">Las manos detrás de cada producto</h2>
         </div>
         <div className="ambs-cta" data-anim="up">
-          <p>17 familias, fincas y talleres del Huila con historia propia.</p>
-          <a className="btn btn-outline" href="#unete">Quiero ser embajador</a>
+          <p>{ambassadors.length} familias, fincas y talleres del Huila con historia propia.</p>
+          <div className="form-actions">
+            <Link className="btn btn-outline" to="/quiero-ser-embajador">Quiero ser embajador</Link>
+            <Link className="text-cta" to="/embajadores">Conócelos a todos <Icon name="arrow" size={18} stroke={2.4} /></Link>
+          </div>
         </div>
       </div>
       <div className="amb-lanes">
         {rows.map((r, i) => (
           <div className={`amb-lane${i ? ' rev' : ''}`} key={i}>
             <div className="amb-track">
-              {[...r, ...r].map((a, j) => <AmbCard key={`${a.name}${j}`} a={a} onShop={onShopZone} />)}
+              {[...r, ...r].map((a, j) => <AmbCard key={`${a.id}${j}`} a={a} />)}
             </div>
           </div>
         ))}
@@ -72,9 +77,9 @@ export function Culture() {
           </ul>
         </div>
         <div className="collage" aria-label="Fotos del Huila">
-          <figure className="c1" data-speed="0.08"><img src="/img/sanjuanero.jpg" alt="Pareja bailando el Sanjuanero huilense" loading="lazy" /></figure>
-          <figure className="c2" data-speed="0.22"><img src="/img/found/iglesia-villavieja.jpg" alt="Iglesia de Villavieja, junto al desierto de la Tatacoa" loading="lazy" /></figure>
-          <figure className="c3" data-speed="-0.12"><img src="/img/found/san-agustin-mesita-a.jpg" alt="Estatuas del Parque Arqueológico de San Agustín" loading="lazy" /></figure>
+          <figure className="c1" data-speed="0.08"><Img src="/img/sanjuanero.jpg" sizes="(max-width: 860px) 60vw, 30vw" alt="Pareja bailando el Sanjuanero huilense" loading="lazy" /></figure>
+          <figure className="c2" data-speed="0.22"><Img src="/img/found/iglesia-villavieja.jpg" sizes="(max-width: 860px) 50vw, 25vw" alt="Iglesia de Villavieja, junto al desierto de la Tatacoa" loading="lazy" /></figure>
+          <figure className="c3" data-speed="-0.12"><Img src="/img/found/san-agustin-mesita-a.jpg" sizes="(max-width: 860px) 50vw, 25vw" alt="Estatuas del Parque Arqueológico de San Agustín" loading="lazy" /></figure>
           <div className="c-badge" data-speed="0.35"><b>5.364</b><span>m.s.n.m.<br />Nevado del Huila</span></div>
         </div>
       </div>

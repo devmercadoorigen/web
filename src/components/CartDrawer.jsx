@@ -1,19 +1,17 @@
 import { useEffect } from 'react';
-import { FREE_SHIPPING, PRODUCTS } from '../data/catalog.js';
-import { useCart } from '../context/CartContext.jsx';
+import { Link, useLocation, useNavigate } from 'react-router';
+import { useCart } from '../features/cart/CartProvider.jsx';
+import { UpsellRow, useCompleteBox } from '../features/recommendations/CompleteBox.jsx';
 import { money } from '../lib/format.js';
+import { HashLink } from './HashLink.jsx';
 import { Icon, ProductArt } from './ui.jsx';
 
-// Sugiere el producto que mejor completa el umbral de envío gratis.
-function suggestion(items, missing) {
-  const target = missing || 40000;
-  return PRODUCTS.filter((p) => !items[p.id] && p.price <= 40000).sort((a, b) => Math.abs(target - a.price) - Math.abs(target - b.price))[0];
-}
-
 export function CartDrawer() {
-  const { items, lines, subtotal, missing, add, setQty, open, setOpen, notify } = useCart();
-  const pct = Math.min(100, (subtotal / FREE_SHIPPING) * 100);
-  const sug = suggestion(items, missing);
+  const { lines, subtotal, missing, freeShipping, setQty, open, setOpen, notify } = useCart();
+  const navigate = useNavigate();
+  const pct = Math.min(100, (subtotal / freeShipping) * 100);
+  // Sugerencias personalizadas para completar la caja (solo con el carrito abierto).
+  const box = useCompleteBox({ limit: 2, enabled: open && lines.length > 0 });
 
   useEffect(() => {
     const onKey = (e) => e.key === 'Escape' && setOpen(false);
@@ -40,15 +38,15 @@ export function CartDrawer() {
         <div className="items">
           {lines.length ? (
             lines.map((l) => (
-              <div className="line" key={l.id}>
-                <div className="thumb"><ProductArt art={l.art} colors={l.colors} image={l.image} maker={l.maker} alt={l.name} /></div>
+              <div className="line" key={l.cartKey}>
+                <div className="thumb"><ProductArt art={l.art} artLabel={l.artLabel} colors={l.colors} image={l.image} maker={l.maker} alt={l.name} /></div>
                 <div className="info">
                   <b>{l.name}</b>
                   <span className="muted">{l.sub}</span>
                   <span className="qty">
-                    <button type="button" aria-label="Quitar uno" onClick={() => setQty(l.id, l.qty - 1)}>−</button>
+                    <button type="button" aria-label="Quitar uno" onClick={() => setQty(l.cartKey, l.qty - 1)}>−</button>
                     <span>{l.qty}</span>
-                    <button type="button" aria-label="Agregar uno" onClick={() => setQty(l.id, l.qty + 1)}>+</button>
+                    <button type="button" aria-label="Agregar uno" onClick={() => setQty(l.cartKey, l.qty + 1)}>+</button>
                   </span>
                 </div>
                 <span className="lp">{money(l.price * l.qty)}</span>
@@ -58,26 +56,25 @@ export function CartDrawer() {
             <div className="cart-empty">
               <p className="cart-empty-title">Tu caja está vacía</p>
               <p>Empieza por lo más pedido del Huila.</p>
-              <a className="btn btn-buy btn-sm" href="#tienda" onClick={() => setOpen(false)}>Ver productos</a>
+              <HashLink className="btn btn-buy btn-sm" to="#tienda" onClick={() => setOpen(false)}>Ver productos</HashLink>
             </div>
           )}
         </div>
-        {sug && (
+        {lines.length > 0 && box.items.length > 0 && (
           <div className="upsell">
             <p className="upsell-title">{missing > 0 ? 'Completa tu envío gratis' : 'Suma otro sabor'}</p>
-            <div className="zp">
-              <div className="thumb"><ProductArt {...sug} alt={sug.name} /></div>
-              <div><b>{sug.name}</b>{sug.maker} · {money(sug.price)}</div>
-              <button type="button" aria-label={`Añadir ${sug.name}`} onClick={() => add(sug.id)}>+</button>
+            <div className="upsell-list">
+              {box.items.map((p) => <UpsellRow key={p.id} p={p} missing={missing} onPick={() => setOpen(false)} />)}
             </div>
           </div>
         )}
         <div className="drawer-ft">
           <div className="tot"><span>Subtotal</span><span>{money(subtotal)}</span></div>
-          <button className="btn btn-buy" type="button" onClick={() => notify(subtotal ? 'Aquí se conecta la pasarela de pago' : 'Agrega un producto para continuar')}>
+          <button className="btn btn-buy" type="button" onClick={() => { if (!subtotal) return notify('Agrega un producto para continuar'); setOpen(false); navigate('/checkout'); }}>
             Pagar de forma segura
           </button>
-          <small>PSE · Nequi · Tarjetas · Pago único para todos los productores</small>
+          {lines.length > 0 && <Link to="/carrito" className="link drawer-cart-link" onClick={() => setOpen(false)}>Ver carrito completo</Link>}
+          <small>PSE · Nequi · Daviplata · Tarjetas · Pago único para todos los productores</small>
         </div>
       </aside>
     </>
@@ -86,8 +83,10 @@ export function CartDrawer() {
 
 export function MobileBar() {
   const { count, subtotal, missing, setOpen } = useCart();
+  const { pathname } = useLocation();
+  const hidden = pathname === '/checkout' || pathname === '/carrito';
   return (
-    <div className={`mbar${count ? ' show' : ''}`}>
+    <div className={`mbar${count && !hidden ? ' show' : ''}`}>
       <div className="t">
         <b>{money(subtotal)}</b>
         <span>{missing > 0 ? `Faltan ${money(missing)} para envío gratis` : 'Envío gratis activado'}</span>
@@ -97,7 +96,3 @@ export function MobileBar() {
   );
 }
 
-export function Toast() {
-  const { toast } = useCart();
-  return <div className={`toast${toast ? ' on' : ''}`} role="status">{toast}</div>;
-}

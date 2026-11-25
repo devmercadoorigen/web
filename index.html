@@ -3,17 +3,72 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Mercado Origen · Productos 100% del Huila</title>
     <meta name="description" content="Marketplace del Huila: café, cacao, miel, artesanías y todo lo que se produce en los 37 municipios. Un carrito, un pago, un envío." />
     <meta name="theme-color" content="#0B7A3B" />
     <meta name="color-scheme" content="light" />
-    <link rel="icon" type="image/png" href="/img/logo.png" />
+    <!-- Open Graph por defecto (cada página lo ajusta; los robots de redes reciben las de api/og.js) -->
+    <meta property="og:site_name" content="Mercado Origen" />
+    <meta property="og:locale" content="es_CO" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Mercado Origen · Productos 100% del Huila" />
+    <meta property="og:description" content="Café, cacao, miel y artesanías de los productores del Huila. Un carrito, un pago, un envío." />
+    <meta property="og:image" content="/og.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" type="image/png" sizes="64x64" href="/favicon-64.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <style>
+      /* Esqueleto del home en HTML puro (ver body): encima de la app hasta que React pinta su foto. */
+      #boot { position: absolute; top: 0; left: 0; right: 0; z-index: 60; pointer-events: none; }
+      .boot-announce { height: 41px; background: var(--verde-800, #064823); }
+      .boot-header { height: var(--header-h, 84px); background: #fff; }
+      /* Pantalla de carga navideña (temporada): Papá Noel empujando el carrito del logo */
+      #xmas { position: fixed; inset: 0; z-index: 200; display: grid; place-content: center; justify-items: center; gap: 14px; padding: 24px; background: #fbf8f1; pointer-events: none; transition: opacity 0.45s ease, visibility 0.45s; font-family: Nunito, system-ui, sans-serif; }
+      #xmas img { width: min(520px, 88vw); height: auto; }
+      #xmas p { margin: 0; color: #0b7a3b; font-weight: 800; font-size: 17px; text-align: center; }
+      #xmas small { color: #5f6b64; font-size: 14px; font-weight: 600; }
+      #xmas.out { opacity: 0; visibility: hidden; }
+    </style>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=IBM+Plex+Mono:wght@500&display=swap" />
-    <title>Mercado Origen · Productos 100% del Huila</title>
+    <!-- Fuente sin bloquear el primer pintado (mientras carga se usa la del sistema) -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=IBM+Plex+Mono:wght@500&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=IBM+Plex+Mono:wght@500&display=swap" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=IBM+Plex+Mono:wght@500&display=swap" /></noscript>
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      // Solo en el home: la foto del hero se ve apenas llegan el HTML y el CSS,
+      // sin esperar al JavaScript. React la retira cuando su foto ya está pintada.
+      if (location.pathname === '/') {
+        var boot = document.createElement('div');
+        boot.id = 'boot';
+        boot.setAttribute('aria-hidden', 'true');
+        boot.innerHTML = '<div class="boot-announce"></div><div class="boot-header"></div>' +
+          '<section class="hero"><div class="hero-frame hero-skeleton"><div class="hero-bg">' +
+          '<img src="/img/tatacoa-960.webp" srcset="/img/tatacoa-480.webp 480w, /img/tatacoa-960.webp 960w, /img/tatacoa-1600.webp 1600w" sizes="100vw" width="1920" height="1280" alt="" fetchpriority="high">' +
+          '</div><div class="hero-shade"></div></div></section>';
+        document.body.insertBefore(boot, document.getElementById('root'));
+      }
+      // Navidad (15 nov – 6 ene, hora local): Papá Noel en cada carga completa de la página
+      // (las navegaciones internas no recargan). ?navidad la muestra fuera de temporada.
+      // src/lib/boot.js la retira cuando la app está lista.
+      (function () {
+        var d = new Date(), m = d.getMonth(), day = d.getDate();
+        var season = (m === 10 && day >= 15) || m === 11 || (m === 0 && day <= 6);
+        var force = /[?&]navidad\b/.test(location.search);
+        if (!force && !season) return;
+        var x = document.createElement('div');
+        x.id = 'xmas';
+        x.setAttribute('role', 'status');
+        x.innerHTML = '<img src="/brand/papa-noel.svg" width="420" height="270" alt="Papá Noel empujando el carrito de Mercado Origen">' +
+          '<p>Papá Noel está llenando tu carrito…</p><small>Productos 100% del Huila</small>';
+        document.body.appendChild(x);
+        window.__xmasAt = Date.now();
+      })();
+    </script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

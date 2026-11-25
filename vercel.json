@@ -1,0 +1,29 @@
+{
+  "rewrites": [
+    { "source": "/sitemap.xml", "destination": "/api/sitemap" },
+    { "source": "/robots.txt", "destination": "/api/robots" },
+    {
+      "source": "/:kind(producto|embajador|kit|categoria|zona)/:slug",
+      "has": [{ "type": "header", "key": "user-agent", "value": "(?i).*(facebookexternalhit|facebookcatalog|whatsapp|twitterbot|linkedinbot|slackbot|telegrambot|discordbot|pinterest|skypeuripreview|applebot|redditbot|embedly).*" }],
+      "destination": "/api/og?path=/:kind/:slug"
+    },
+    {
+      "source": "/:page(tienda|embajadores|kits)",
+      "has": [{ "type": "header", "key": "user-agent", "value": "(?i).*(facebookexternalhit|whatsapp|twitterbot|linkedinbot|slackbot|telegrambot|discordbot|pinterest).*" }],
+      "destination": "/api/og?path=/:page"
+    },
+    { "source": "/((?!assets/|img/|api/).*)", "destination": "/index.html" }
+  ],
+  "headers": [
+    { "source": "/assets/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }] },
+    { "source": "/img/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=2592000, stale-while-revalidate=86400" }] },
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" }
+      ]
+    }
+  ]
+}
