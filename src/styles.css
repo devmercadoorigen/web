@@ -130,7 +130,8 @@ nav.main a:hover { color: var(--verde); background: var(--verde-50); }
 .hero-pill i { width: 9px; height: 9px; border-radius: 50%; background: var(--ocre); animation: ping 2s infinite; }
 @keyframes ping { 0% { box-shadow: 0 0 0 0 rgba(242, 183, 5, 0.7); } 70%, 100% { box-shadow: 0 0 0 10px rgba(242, 183, 5, 0); } }
 .hero h1 { font-size: clamp(46px, 6.6vw, 96px); line-height: 0.98; letter-spacing: -0.035em; margin-top: 22px; }
-.hero-word { display: inline-block; overflow: hidden; padding-bottom: 0.1em; margin-bottom: -0.1em; vertical-align: top; margin-right: 0.22em; }
+.hero-word { display: inline-block; padding-bottom: 0.1em; margin-bottom: -0.1em; vertical-align: top; margin-right: 0.22em; }
+.hero h1.is-revealing .hero-word { overflow: hidden; }
 .hero-word > span { display: inline-block; }
 .hero-word.accent { color: var(--ocre); font-style: italic; }
 .hero-lead { margin-top: 24px; font-size: clamp(17px, 1.5vw, 20px); color: rgba(255, 255, 255, 0.88); max-width: 50ch; }
@@ -605,3 +606,11 @@ nav.main a:hover { color: var(--verde); background: var(--verde-50); }
 .menu-drawer a svg { color: var(--verde); }
 .menu-drawer a:hover, .menu-drawer a.active { background: var(--verde-50); color: var(--verde); }
 @media (prefers-reduced-motion: reduce) { .menu-drawer, .menu-drawer.on { transition: none; } }
+
+/* Celular: pie de la tarjeta apilado (precio arriba, botón a todo el ancho) */
+@media (max-width: 520px) {
+  .card-foot { flex-direction: column; align-items: stretch; gap: 8px; padding-top: 8px; }
+  .card-foot .add { justify-content: center; width: 100%; }
+}
+/* La etiqueta no se mete debajo del corazón: si no cabe, pasa a dos líneas */
+@media (max-width: 520px) { .card-badge { max-width: calc(100% - 56px); line-height: 1.25; border-radius: 12px; } }

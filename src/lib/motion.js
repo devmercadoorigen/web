@@ -19,8 +19,25 @@ export function scrollToTarget(target, offset = -96) {
     try { el = document.querySelector(target); } catch { return; }
   }
   if (!el) return;
-  if (lenis) lenis.scrollTo(el, { offset, duration: 1.2 });
-  else window.scrollTo({ top: el.getBoundingClientRect().top + scrollY + offset, behavior: reduced() ? 'auto' : 'smooth' });
+  if (!lenis) {
+    window.scrollTo({ top: el.getBoundingClientRect().top + scrollY + offset, behavior: reduced() ? 'auto' : 'smooth' });
+    return;
+  }
+  // Lenis guarda el alto de la página: al llegar desde otra ruta sigue con el alto de la
+  // anterior y se queda corto. Se recalcula antes de desplazar, y al terminar se comprueba
+  // que la sección quedó en su sitio (imágenes o secciones que cargan tarde mueven el destino).
+  let tries = 0;
+  const go = (duration) => {
+    lenis.resize();
+    lenis.scrollTo(el, {
+      offset, duration, force: true,
+      onComplete: () => {
+        if (!el.isConnected || ++tries > 3 || lenis.scroll >= lenis.limit - 1) return;
+        if (Math.abs(el.getBoundingClientRect().top + offset) > 4) go(0.5);
+      },
+    });
+  };
+  go(1.2);
 }
 
 // Scroll suave (Lenis) sincronizado con ScrollTrigger; los enlaces #ancla también lo usan.

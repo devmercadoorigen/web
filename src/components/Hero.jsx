@@ -86,9 +86,13 @@ export function Hero({ loading = false }) {
   useLayoutEffect(() => {
     if (loading || reduced()) return;
     const ctx = gsap.context(() => {
+      // La máscara de cada palabra solo existe durante la entrada: después recortaría
+      // las colas (g, coma) y la inclinación de la cursiva.
+      const title = root.current?.querySelector('h1');
+      title?.classList.add('is-revealing');
       const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
       tl.from('.hero-bg img', { scale: 1.25, duration: 2.4, ease: 'power2.out' }, 0)
-        .from('.hero-word > span', { yPercent: 110, rotate: 4, duration: 1.1, stagger: 0.06 }, 0.25)
+        .from('.hero-word > span', { yPercent: 110, rotate: 4, duration: 1.1, stagger: 0.06, onComplete: () => title?.classList.remove('is-revealing') }, 0.25)
         .from('.hero-pill', { y: 20, opacity: 0, duration: 0.8 }, 0.2)
         .from('.hero-lead, .hero-ctas, .hero-trust', { y: 30, opacity: 0, duration: 0.9, stagger: 0.1 }, 0.8)
         .from('.float-card', { y: 120, opacity: 0, rotate: (i) => [-14, 10, -6][i], duration: 1.3, stagger: 0.14, ease: 'back.out(1.4)' }, 0.6)
@@ -123,7 +127,7 @@ export function Hero({ loading = false }) {
         cards?.removeEventListener('pointerleave', leave);
       };
     }, root);
-    return () => ctx.revert();
+    return () => { ctx.revert(); root.current?.querySelector('h1')?.classList.remove('is-revealing'); };
   }, [loading]);
 
   return (
@@ -194,7 +198,7 @@ export function Hero({ loading = false }) {
                   <div key={`i${k}`} className="fc-info fc-swap">
                     {tag && <span className="fc-badge">{tag}</span>}
                     <Link to={`/producto/${p.slug}`} className="fc-link"><b>{p.maker}</b></Link>
-                    <span>{p.town} · {money(p.price)}</span>
+                    <span className="fc-meta"><span className="fc-town">{p.town}</span> · <span className="fc-price">{money(p.price)}</span></span>
                   </div>
                   <CardAction p={p} className="fc-add" onAdd={add} />
                 </article>
