@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation } from 'react-router';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase.js';
+import { usePaymentMode } from '../../lib/paymentMode.js';
 import { Icon } from '../../components/ui.jsx';
 import { Toast } from '../../components/Toast.jsx';
 import { UserMenu } from '../auth/UserMenu.jsx';
@@ -58,15 +59,15 @@ export default function AdminLayout() {
     },
   });
 
-  // Modo de pagos (site_settings es de lectura pública; solo se muestra el aviso).
-  const payMode = useQuery({
-    queryKey: ['admin', 'payments-mode'],
-    refetchInterval: 60_000,
-    queryFn: async () => {
-      const { data } = await supabase.from('site_settings').select('value').eq('key', 'payments').maybeSingle();
-      return data?.value?.wompi_mode === 'production' ? 'production' : 'sandbox';
-    },
-  });
+  // Modo de pagos: decide qué pedidos y resúmenes se ven (prueba o producción).
+  // Si cambia (aquí o desde otra pestaña), todo el admin se vuelve a cargar con el modo nuevo.
+  const payMode = { data: usePaymentMode() };
+  const qc = useQueryClient();
+  const prevMode = useRef(payMode.data);
+  useEffect(() => {
+    if (prevMode.current && payMode.data && prevMode.current !== payMode.data) qc.invalidateQueries({ queryKey: ['admin'] });
+    prevMode.current = payMode.data;
+  }, [payMode.data, qc]);
 
   return (
     <div className={`adm${collapsed ? ' is-collapsed' : ''}${drawer ? ' drawer-open' : ''}`}>

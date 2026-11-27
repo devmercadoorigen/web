@@ -243,12 +243,14 @@ set search_path = ''
 as $$
   select case when not public.is_admin() then null else jsonb_build_object(
     'revenue_total', (select coalesce(sum(oi.line_total), 0) from public.order_items oi join public.orders o on o.id = oi.order_id
-                      where oi.ambassador_id = p_ambassador_id and o.paid_at is not null and o.status not in ('cancelado', 'reembolsado')),
+                      where oi.ambassador_id = p_ambassador_id and o.paid_at is not null and o.status not in ('cancelado', 'reembolsado')
+                        and o.environment = public.payment_mode()),
     'orders', (select count(distinct oi.order_id) from public.order_items oi join public.orders o on o.id = oi.order_id
-               where oi.ambassador_id = p_ambassador_id and o.paid_at is not null and o.status not in ('cancelado', 'reembolsado')),
+               where oi.ambassador_id = p_ambassador_id and o.paid_at is not null and o.status not in ('cancelado', 'reembolsado')
+                 and o.environment = public.payment_mode()),
     'products', (select coalesce(jsonb_object_agg(status, n), '{}'::jsonb) from (select status, count(*) n from public.products where ambassador_id = p_ambassador_id group by status) s),
-    'pending_payout', (select coalesce(sum(net), 0) from public.ambassador_payouts where ambassador_id = p_ambassador_id and status = 'pendiente'),
-    'paid_total', (select coalesce(sum(net), 0) from public.ambassador_payouts where ambassador_id = p_ambassador_id and status = 'pagado'))
+    'pending_payout', (select coalesce(sum(net), 0) from public.ambassador_payouts where ambassador_id = p_ambassador_id and status = 'pendiente' and environment = public.payment_mode()),
+    'paid_total', (select coalesce(sum(net), 0) from public.ambassador_payouts where ambassador_id = p_ambassador_id and status = 'pagado' and environment = public.payment_mode()))
   end
 $$;
 
@@ -256,13 +258,13 @@ create or replace function public.ambassador_dashboard()
 returns jsonb language sql stable security definer
 set search_path = ''
 as $$
-  with me as (select public.my_ambassador_id() as id),
+  with me as (select public.my_ambassador_id() as id, public.payment_mode() as env),
   m as (select date_trunc('month', now() at time zone 'America/Bogota') as start),
   sold as (
     select oi.line_total, oi.quantity, o.paid_at at time zone 'America/Bogota' as paid_local
     from public.order_items oi
     join public.orders o on o.id = oi.order_id
-    join me on oi.ambassador_id = me.id
+    join me on oi.ambassador_id = me.id and o.environment = me.env
     where o.paid_at is not null and o.status not in ('cancelado', 'reembolsado')
   )
   select case when (select id from me) is null then null else jsonb_build_object(
@@ -273,13 +275,13 @@ as $$
       select jsonb_agg(jsonb_build_object('month', to_char(g.mm, 'YYYY-MM'), 'sales', coalesce(x.s, 0)) order by g.mm)
       from (select generate_series(m.start - interval '5 months', m.start, interval '1 month') as mm from m) g
       left join lateral (select sum(line_total) as s from sold where date_trunc('month', paid_local) = g.mm) x on true),
-    'pending_payout',   (select coalesce(sum(net), 0) from public.ambassador_payouts p, me where p.ambassador_id = me.id and p.status = 'pendiente'),
-    'paid_total',       (select coalesce(sum(net), 0) from public.ambassador_payouts p, me where p.ambassador_id = me.id and p.status = 'pagado'),
+    'pending_payout',   (select coalesce(sum(net), 0) from public.ambassador_payouts p, me where p.ambassador_id = me.id and p.status = 'pendiente' and p.environment = me.env),
+    'paid_total',       (select coalesce(sum(net), 0) from public.ambassador_payouts p, me where p.ambassador_id = me.id and p.status = 'pagado' and p.environment = me.env),
     'products',         (select coalesce(jsonb_object_agg(status, n), '{}'::jsonb) from (
                            select pr.status, count(*) as n from public.products pr, me where pr.ambassador_id = me.id group by pr.status) s),
     'low_stock',        (select count(*) from public.products pr, me where pr.ambassador_id = me.id and pr.status = 'aprobado' and pr.stock <= 3),
     'to_prepare',       (select count(*) from public.order_items oi join public.orders o on o.id = oi.order_id, me
-                         where oi.ambassador_id = me.id and oi.item_status = 'pendiente' and o.status in ('pagado', 'preparando')),
+                         where oi.ambassador_id = me.id and oi.item_status = 'pendiente' and o.status in ('pagado', 'preparando') and o.environment = me.env),
     'rating_avg',       a.rating_avg,
     'rating_count',     a.rating_count,
     'sales_count',      a.sales_count,
@@ -303,6 +305,7 @@ as $$
   join public.orders o on o.id = oi.order_id
   where oi.ambassador_id = public.my_ambassador_id()
     and o.status not in ('pendiente_pago', 'cancelado')
+    and o.environment = public.payment_mode()
     and (p_status is null or oi.item_status = p_status)
   order by o.paid_at desc nulls last
 $$;

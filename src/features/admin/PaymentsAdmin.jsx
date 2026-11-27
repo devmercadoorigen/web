@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTitle } from '../../lib/useTitle.js';
+import { PAYMENT_MODE_KEY } from '../../lib/paymentMode.js';
 import { useToast } from '../../components/Toast.jsx';
 import { Field, FormNotice } from '../auth/AuthShell.jsx';
 import { Modal } from './kit.jsx';
@@ -39,7 +40,8 @@ export default function PaymentsAdmin() {
     try {
       const r = await adminFn('payments-config', { action: 'set_mode', mode: target });
       qc.setQueryData(['admin', 'payments-config'], r);
-      qc.invalidateQueries({ queryKey: ['admin', 'payments-mode'] });
+      qc.setQueryData(PAYMENT_MODE_KEY, r.mode);
+      qc.invalidateQueries({ queryKey: ['admin'] }); // pedidos y resúmenes del modo nuevo
       setTarget(null);
       notify(`Pagos en modo ${ENVS[r.mode].short}`);
     } catch (e) {

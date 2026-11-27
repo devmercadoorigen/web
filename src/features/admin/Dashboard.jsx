@@ -54,6 +54,13 @@ export default function Dashboard() {
     <div className="pn-stack">
       <header className="pn-head"><h1>Resumen</h1><p className="muted">Ventas y operación de Mercado Origen. Se actualiza cada minuto.</p></header>
 
+      {d.environment === 'sandbox' && (
+        <Link to="/admin/pagos" className="pn-callout">
+          <Icon name="shield" size={24} />
+          <div><b>Estás viendo datos de prueba</b><span>Ventas, pedidos y liquidaciones de los pagos en modo prueba. Al pasar a producción solo verás los reales.</span></div>
+        </Link>
+      )}
+
       {d.pending_products > 0 && (
         <Link to="/admin/aprobaciones" className="pn-callout">
           <Icon name="check" size={24} />

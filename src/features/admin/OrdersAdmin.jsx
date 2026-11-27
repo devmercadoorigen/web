@@ -5,6 +5,7 @@ import { supabase } from '../../lib/supabase.js';
 import { friendlyError } from '../../lib/errors.js';
 import { dateTime, longDate, money, ORDER_STATUS, whatsappLink } from '../../lib/format.js';
 import { useTitle } from '../../lib/useTitle.js';
+import { getPaymentMode } from '../../lib/paymentMode.js';
 import { Icon } from '../../components/ui.jsx';
 import { useToast } from '../../components/Toast.jsx';
 import { Field, FormNotice } from '../auth/AuthShell.jsx';
@@ -21,12 +22,15 @@ export function OrdersList() {
   useTitle('Pedidos');
   const [params] = useSearchParams();
   const [tab, setTab] = useState('pedidos');
+  const qc = useQueryClient();
   const table = useServerTable({
     key: ['orders'],
     initialSort: { col: 'created_at', asc: false },
     initialFilters: { status: params.get('estado') || undefined, review: params.get('revision') || undefined },
-    query: ({ search, filters, sort, from, to }) => {
-      let q = supabase.from('orders').select('id, order_number, status, total, email, customer_name, created_at, needs_review, status_changed_at, shipping_address, items:order_items (quantity)', { count: 'exact' });
+    query: async ({ search, filters, sort, from, to }) => {
+      const env = await getPaymentMode(qc);
+      let q = supabase.from('orders').select('id, order_number, status, total, email, customer_name, created_at, needs_review, status_changed_at, shipping_address, items:order_items (quantity)', { count: 'exact' })
+        .eq('environment', env);
       if (search) q = q.or(`order_number.ilike.%${search}%,email.ilike.%${search}%,customer_name.ilike.%${search}%`);
       if (filters.status) q = q.eq('status', filters.status);
       if (filters.review) q = q.eq('needs_review', true);
@@ -65,11 +69,13 @@ function Pickups() {
   const q = useQuery({
     queryKey: ['admin', 'pickups'],
     queryFn: async () => {
+      const env = await getPaymentMode(qc);
       const { data, error } = await supabase
         .from('order_items')
-        .select('id, sku, name, quantity, ready_at, item_status, order:orders!inner (order_number, status), ambassador:ambassadors (id, brand_name, municipality:municipalities (name), private:ambassador_private (phone))')
+        .select('id, sku, name, quantity, ready_at, item_status, order:orders!inner (order_number, status, environment), ambassador:ambassadors (id, brand_name, municipality:municipalities (name), private:ambassador_private (phone))')
         .in('item_status', ['pendiente', 'listo_para_recoger'])
         .in('order.status', ['pagado', 'preparando'])
+        .eq('order.environment', env)
         .order('ready_at', { nullsFirst: false });
       if (error) throw error;
       return data;
@@ -215,7 +221,10 @@ export function OrderAdminDetail() {
           <h1>{o.order_number}</h1>
           <p className="muted">Hecho el {dateTime(o.created_at)}{o.user ? ' · cliente registrado' : ' · invitado'}</p>
         </div>
-        <StatusPill status={o.status} />
+        <div>
+          {o.environment === 'sandbox' && <span className="pill pill-ocre" title="Pagado con Wompi en modo prueba: no hubo dinero real">Pedido de prueba</span>}{' '}
+          <StatusPill status={o.status} />
+        </div>
       </header>
 
       {o.needs_review && (

@@ -4,6 +4,7 @@ import { supabase } from '../../lib/supabase.js';
 import { friendlyError } from '../../lib/errors.js';
 import { dateTime, longDate, money } from '../../lib/format.js';
 import { useTitle } from '../../lib/useTitle.js';
+import { usePaymentMode } from '../../lib/paymentMode.js';
 import { Icon } from '../../components/ui.jsx';
 import { useToast } from '../../components/Toast.jsx';
 
@@ -13,13 +14,16 @@ export default function PayoutsPage() {
   const { notify } = useToast();
   const rate = amb.private?.commission_rate;
 
+  const mode = usePaymentMode();
   const payouts = useQuery({
-    queryKey: ['amb-payouts', amb.id],
+    queryKey: ['amb-payouts', amb.id, mode],
+    enabled: !!mode,
     queryFn: async () => {
       const { data, error } = await supabase
         .from('ambassador_payouts')
         .select('id, period_start, period_end, gross, commission, net, status, paid_at, receipt_url, items_without_commission')
         .eq('ambassador_id', amb.id)
+        .eq('environment', mode)
         .order('created_at', { ascending: false });
       if (error) throw error;
       return data;

@@ -5,6 +5,7 @@ import { supabase } from '../../lib/supabase.js';
 import { friendlyError } from '../../lib/errors.js';
 import { longDate, money } from '../../lib/format.js';
 import { useTitle } from '../../lib/useTitle.js';
+import { getPaymentMode } from '../../lib/paymentMode.js';
 import { Icon } from '../../components/ui.jsx';
 import { useToast } from '../../components/Toast.jsx';
 import { Field } from '../auth/AuthShell.jsx';
@@ -23,8 +24,10 @@ export default function PayoutsAdmin() {
   const q = useQuery({
     queryKey: ['admin', 'payouts'],
     queryFn: async () => {
+      const env = await getPaymentMode(qc);
       const { data, error } = await supabase.from('ambassador_payouts')
         .select('*, ambassador:ambassadors (id, code, brand_name, private:ambassador_private (commission_rate, legal_name, id_number, bank_info, email))')
+        .eq('environment', env)
         .order('created_at', { ascending: false });
       if (error) throw error;
       return data;
