@@ -55,6 +55,12 @@ a.add { text-decoration: none; }
 .amb-foot a { display: inline-flex; align-items: center; gap: 6px; padding: 6px 0; font-weight: 900; font-size: 14.5px; color: var(--verde); text-decoration: none; }
 .amb-foot a svg { transition: transform 0.3s var(--ease); }
 .amb-foot a:hover svg { transform: translateX(4px); }
+/* Toda la tarjeta lleva al perfil: el enlace "Ver productos" se estira sobre la tarjeta. */
+.amb { position: relative; cursor: pointer; }
+.amb-foot a::after { content: ''; position: absolute; inset: 0; border-radius: inherit; }
+.amb:hover .amb-foot a svg { transform: translateX(4px); }
+.amb-foot a:focus-visible { outline: none; }
+.amb:has(.amb-foot a:focus-visible) { outline: 3px solid var(--verde); outline-offset: 3px; }
 img.amb-ava { object-fit: cover; border-radius: 18px; }
 .ambs-cta .form-actions { align-items: center; }
 .shop-more { margin-top: 26px; display: flex; justify-content: center; }

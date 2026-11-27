@@ -23,6 +23,14 @@ export function Footer() {
     <footer className="foot">
       <Tricolor />
       <div className="wrap">
+        <section className="foot-ally" aria-label="Aliado institucional">
+          <div className="foot-ally-copy">
+            <span className="foot-ally-kicker">Con el apoyo de</span>
+            <p>Promovemos la cultura, el agro y el emprendimiento del Huila de la mano de la <b>Gobernación del Huila</b>.</p>
+          </div>
+          <img className="foot-ally-logo" src="/img/gobernacion.webp" srcSet="/img/gobernacion-320.webp 320w, /img/gobernacion.webp 1920w"
+            sizes="(max-width: 700px) 86vw, 460px" alt="Gobernación del Huila" width="1920" height="695" loading="lazy" />
+        </section>
         <div className="foot-top">
           <div className="foot-brand">
             <span className="foot-logo">
@@ -55,7 +63,6 @@ export function Footer() {
               <li><Icon name="pin" size={16} />Huila, Colombia</li>
               <li className="mail"><a href={`mailto:${mail}`}>{mail}</a></li>
             </ul>
-            <div className="foot-gov"><span>Con el apoyo de</span><img src="/img/gobernacion-320.webp" alt="Gobernación del Huila" width="320" height="116" loading="lazy" /></div>
           </div>
         </div>
         <div className="foot-pay">
