@@ -490,8 +490,8 @@ nav.main a:hover { color: var(--verde); background: var(--verde-50); }
 .news-copy h2 { max-width: 15ch; }
 .news-copy > p { color: rgba(255, 255, 255, 0.88); font-size: 18px; max-width: 46ch; }
 .news-copy form { display: flex; flex-wrap: wrap; gap: 10px; width: 100%; max-width: 520px; padding: 6px; border-radius: 999px; background: rgba(255, 255, 255, 0.14); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3); }
-.news-copy input { flex: 1; min-width: 180px; border: 0; background: transparent; color: #fff; font: inherit; font-size: 16px; padding: 12px 18px; outline: none; }
-.news-copy input::placeholder { color: rgba(255, 255, 255, 0.72); }
+.news-copy form input { flex: 1; min-width: 180px; border: 0; background: transparent; color: #fff; font: inherit; font-size: 16px; padding: 12px 18px; outline: none; }
+.news-copy form input::placeholder { color: rgba(255, 255, 255, 0.72); }
 .news-copy small { font-size: 13px; color: rgba(255, 255, 255, 0.75); }
 .form-msg { font-weight: 800; color: var(--ocre); }
 .form-msg.err { color: #FFD3C9; }
@@ -501,6 +501,7 @@ nav.main a:hover { color: var(--verde); background: var(--verde-50); }
 .na1 { right: 10px; top: 0; rotate: 8deg; z-index: 2; }
 .na2 { left: 30%; bottom: 0; rotate: -3deg; z-index: 3; }
 @media (max-width: 860px) { .news-card { grid-template-columns: 1fr; } .news-art { height: 240px; } .na { width: 130px; height: 130px; } .news-copy form { border-radius: 24px; } }
+@media (max-width: 480px) { .news-copy form .btn { flex: 1 1 100%; justify-content: center; } }
 
 /* Pie */
 .foot { background: #fff; }
@@ -521,7 +522,14 @@ nav.main a:hover { color: var(--verde); background: var(--verde-50); }
 .foot-gov { margin-top: 22px; display: grid; gap: 8px; font-size: 13px; color: var(--muted); font-weight: 700; }
 .foot-gov img { width: 150px; height: auto; }
 .foot-pay { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 40px; }
-.foot-pay span { padding: 7px 14px; border-radius: 10px; background: var(--bg-2); font-weight: 900; font-size: 13px; color: var(--ink-2); }
+.foot-pay { gap: 10px; }
+.pay-ico { position: relative; display: inline-flex; border-radius: 8px; box-shadow: 0 0 0 1px var(--line), var(--sh-1); outline: none; transition: transform 0.25s var(--ease); }
+.pay-ico svg { display: block; border-radius: 7px; }
+.pay-ico:hover, .pay-ico:focus-visible { transform: translateY(-2px); }
+.pay-ico:focus-visible { box-shadow: 0 0 0 2px var(--verde); }
+.pay-ico::after { content: attr(data-label); position: absolute; left: 50%; bottom: calc(100% + 8px); transform: translate(-50%, 4px); padding: 5px 10px; border-radius: 8px; background: var(--ink); color: #fff; font-size: 12.5px; font-weight: 800; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s var(--ease); z-index: 2; }
+.pay-ico::before { content: ''; position: absolute; left: 50%; bottom: calc(100% + 3px); transform: translate(-50%, 4px); border: 5px solid transparent; border-bottom: 0; border-top-color: var(--ink); opacity: 0; transition: opacity 0.2s, transform 0.2s var(--ease); z-index: 2; }
+.pay-ico:hover::after, .pay-ico:focus-visible::after, .pay-ico:hover::before, .pay-ico:focus-visible::before { opacity: 1; transform: translate(-50%, 0); }
 .foot-bottom { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-top: 24px; padding-top: 22px; box-shadow: inset 0 1px 0 var(--line); font-size: 14px; color: var(--muted); }
 .foot-bottom a { text-decoration: none; }
 .foot-bottom a:hover { color: var(--verde); }

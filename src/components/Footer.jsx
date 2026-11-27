@@ -5,6 +5,16 @@ import { HashLink } from './HashLink.jsx';
 import { XMAS } from '../features/xmas/Christmas.jsx';
 import { Icon, Tricolor } from './ui.jsx';
 
+// Métodos de pago (logos simplificados, 52×34). El nombre aparece al pasar el cursor.
+const T = { fontFamily: 'Arial, Helvetica, sans-serif', fontWeight: 900, textAnchor: 'middle' };
+const PAYMENTS = [
+  { name: 'PSE', art: <><rect width="52" height="34" rx="7" fill="#fff" /><circle cx="26" cy="17" r="12.5" fill="#0F4C9A" /><text x="26" y="20.6" fontSize="10" fill="#fff" {...T}>pse</text></> },
+  { name: 'Nequi', art: <><rect width="52" height="34" rx="7" fill="#200020" /><text x="24" y="21" fontSize="12" fill="#fff" {...T}>nequi</text><rect x="38.5" y="9" width="4" height="4" rx="1" fill="#DA0081" /></> },
+  { name: 'Daviplata', art: <><rect width="52" height="34" rx="7" fill="#E30613" /><text x="26" y="15.5" fontSize="8" fill="#fff" {...T}>Davi</text><text x="26" y="25" fontSize="8" fill="#fff" {...T}>Plata</text></> },
+  { name: 'Visa', art: <><rect width="52" height="34" rx="7" fill="#fff" /><text x="26" y="21.5" fontSize="14" fill="#1A1F71" fontStyle="italic" {...T}>VISA</text></> },
+  { name: 'Mastercard', art: <><rect width="52" height="34" rx="7" fill="#fff" /><circle cx="21" cy="17" r="9" fill="#EB001B" /><circle cx="31" cy="17" r="9" fill="#F79E1B" /><path d="M26 9.5a9 9 0 0 1 0 15 9 9 0 0 1 0-15z" fill="#FF5F00" /></> },
+];
+
 export function Footer() {
   const { contact } = useSite();
   const wa = contact.whatsapp || '+57 314 239 8821';
@@ -49,7 +59,11 @@ export function Footer() {
           </div>
         </div>
         <div className="foot-pay">
-          {['PSE', 'Nequi', 'Daviplata', 'Visa', 'Mastercard'].map((m) => <span key={m}>{m}</span>)}
+          {PAYMENTS.map(({ name, art }) => (
+            <span key={name} className="pay-ico" role="img" aria-label={name} data-label={name} tabIndex={0}>
+              <svg width="52" height="34" viewBox="0 0 52 34" aria-hidden="true">{art}</svg>
+            </span>
+          ))}
         </div>
         <div className="foot-bottom">
           <span>© 2026 Mercado Origen · Huila, Colombia{XMAS && <> · <span className="xm-greet">¡Feliz Navidad y próspero 2027!</span></>}</span>
