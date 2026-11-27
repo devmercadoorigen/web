@@ -13,7 +13,8 @@ alter table public.email_outbox drop constraint if exists email_outbox_kind_chec
 alter table public.email_outbox add constraint email_outbox_kind_check check (kind in (
   'pedido_confirmado', 'pedido_estado', 'producto_revisado',
   'bienvenida', 'pago_rechazado', 'pedido_embajador', 'pedido_admin',
-  'solicitud_recibida', 'solicitud_admin', 'solicitud_rechazada'));
+  'solicitud_recibida', 'solicitud_admin', 'solicitud_rechazada',
+  'premio_ruleta'));  -- de 20261202000100_welcome_wheel.sql (por si esta se vuelve a ejecutar)
 
 -- Correo del equipo para los avisos internos (editable en /admin/contenido > Correo).
 create or replace function public.admin_notify_email()

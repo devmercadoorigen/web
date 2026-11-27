@@ -52,7 +52,7 @@ export default function PaymentsAdmin() {
   if (cfg.isLoading) return <div className="pn-stack"><header className="pn-head"><h1>Pagos</h1></header><p className="muted">Cargando…</p></div>;
   if (cfg.error) return <div className="pn-stack"><header className="pn-head"><h1>Pagos</h1></header><FormNotice>{cfg.error.message}</FormNotice></div>;
 
-  const { mode, envs, webhook_url } = cfg.data;
+  const { mode, envs } = cfg.data;
   const other = mode === 'production' ? 'sandbox' : 'production';
 
   return (
@@ -98,16 +98,6 @@ export default function PaymentsAdmin() {
           </section>
         );
       })}
-
-      <section className="panel">
-        <h2 className="panel-title">Cómo configurar las llaves</h2>
-        <ol className="small">
-          <li>En comercios.wompi.co → <b>Desarrolladores</b>, copia las 4 llaves de cada ambiente (interruptor “Modo pruebas” / “Modo producción”).</li>
-          <li>Pégalas en <code>supabase/functions/.env</code> (variables <code>WOMPI_TEST_*</code> y <code>WOMPI_PROD_*</code>).</li>
-          <li>Súbelas con <code>npx supabase secrets set --env-file supabase/functions/.env</code> y recarga esta página.</li>
-          <li>En Wompi, en <b>ambos</b> modos, pon esta URL de eventos: <code>{webhook_url}</code></li>
-        </ol>
-      </section>
 
       <Modal open={!!target} onClose={() => setTarget(null)} title={target ? `Cambiar a ${ENVS[target].short}` : ''}>
         {target && (

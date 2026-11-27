@@ -6,7 +6,23 @@ import { PageLoader } from '../components/PageLoader.jsx';
 import { GuestOnly, RequireAuth, RequireRole } from '../features/auth/guards.jsx';
 
 // Cada página fuera del home se descarga solo cuando se visita (code splitting).
-const page = (load, name = 'default') => async () => ({ Component: (await load())[name] });
+// Si se publicó una versión nueva con la pestaña abierta, los archivos viejos ya no existen:
+// se recarga una vez para traer la versión actual (máx. una vez cada 30 s, para no entrar en bucle).
+const RELOAD_KEY = 'mo:chunk-reload';
+const page = (load, name = 'default') => async () => {
+  try {
+    return { Component: (await load())[name] };
+  } catch (err) {
+    let last = 0;
+    try { last = Number(sessionStorage.getItem(RELOAD_KEY)) || 0; } catch { /* sin storage */ }
+    if (Date.now() - last > 30_000) {
+      try { sessionStorage.setItem(RELOAD_KEY, String(Date.now())); } catch { /* sin storage */ }
+      window.location.reload();
+      return new Promise(() => {}); // la página se recarga; no mostrar el error mientras tanto
+    }
+    throw err;
+  }
+};
 
 export const router = createBrowserRouter([
   {
