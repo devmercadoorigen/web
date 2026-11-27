@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Link, NavLink, useLocation } from 'react-router';
 import { useCart } from '../features/cart/CartProvider.jsx';
 import { UserMenu } from '../features/auth/UserMenu.jsx';
@@ -41,6 +42,7 @@ export function Header() {
   const [bumping, setBumping] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [mobileSearch, setMobileSearch] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -58,11 +60,25 @@ export function Header() {
 
   useEffect(() => {
     setMobileSearch(false);
+    setMenuOpen(false);
   }, [pathname]);
+
+  // Menú móvil: se cierra con Escape.
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (e) => { if (e.key === 'Escape') setMenuOpen(false); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [menuOpen]);
+
+  const closeMenu = () => setMenuOpen(false);
 
   return (
     <header className={`top${scrolled ? ' is-scrolled' : ''}`}>
       <div className="wrap top-in">
+        <button type="button" className="icon-btn menu-toggle" aria-label="Abrir menú" aria-expanded={menuOpen} aria-controls="menu-movil" onClick={() => setMenuOpen(true)}>
+          <Icon name="menu" size={24} stroke={2} />
+        </button>
         {isHome ? (
           <a className="logo" href="#inicio">
             <img src="/brand/logo-horizontal-navidad.webp" width="128" height="52" alt="Mercado Origen — Productos de origen del Huila" fetchpriority="high" />
@@ -96,6 +112,22 @@ export function Header() {
         </div>
       )}
       <Garland />
+      {createPortal(<>
+      <div className={`scrim menu-scrim${menuOpen ? ' on' : ''}`} onClick={closeMenu} aria-hidden="true" />
+      <nav id="menu-movil" className={`menu-drawer${menuOpen ? ' on' : ''}`} aria-label="Menú" aria-hidden={!menuOpen} inert={menuOpen ? undefined : ''}>
+        <div className="menu-drawer-hd">
+          <span>Menú</span>
+          <button type="button" className="icon-btn" aria-label="Cerrar menú" onClick={closeMenu}>
+            <Icon name="close" size={22} stroke={2} />
+          </button>
+        </div>
+        <NavLink to="/tienda" onClick={closeMenu}><Icon name="bag" size={20} />Tienda</NavLink>
+        <HashLink to="#territorio" onClick={closeMenu}><Icon name="pin" size={20} />Territorio</HashLink>
+        <NavLink to="/kits" onClick={closeMenu}><Icon name="gift" size={20} />Regalos</NavLink>
+        <NavLink to="/embajadores" onClick={closeMenu}><Icon name="award" size={20} />Embajadores</NavLink>
+        <HashLink to="#historia" onClick={closeMenu}><Icon name="leaf" size={20} />Historia</HashLink>
+      </nav>
+      </>, document.body)}
     </header>
   );
 }

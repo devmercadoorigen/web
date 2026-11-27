@@ -13,7 +13,7 @@ create temporary table seed_products (key text primary key, product_id uuid not 
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Achiras tradicionales huilenses', '100% naturales y artesanales, en bolsa kraft con cierre hermético.', 'Achiras tradicionales huilenses - 100 % Naturales y Artesanales', 9200, 20, null,
+  select a.id, c.id, 'Achiras tradicionales huilenses', '100% naturales y artesanales, en bolsa kraft con cierre hermético.', 'Achiras tradicionales del Huila, elaboradas de manera artesanal con ingredientes 100 % naturales. Un bocado tradicional para compartir y disfrutar en cualquier momento.', 9200, 20, null,
          array['Típico'], '{"art":"achira","colors":["#FDEBD0","#D98A1F"]}'::jsonb, true, false, null, null,
          'aprobado', now(), now() - make_interval(mins => 999)
   from public.ambassadors a, public.categories c where a.code = 'EM0001' and c.code = 'TIP'
@@ -33,7 +33,7 @@ select product_id, '/img/products/EM0001_1.webp', '/img/products/EM0001_1-400.we
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Café exótico Geisha · tueste medio', 'Pitalito, 1.850 msnm. Proceso honey y secado natural.', 'Café Exótico Geisha, de origen Huila (Pitalito), cultivado a 1850 msnm, proceso honey y secado natural', 34500, 40, null,
+  select a.id, c.id, 'Café exótico Geisha · tueste medio', 'Pitalito, 1.850 msnm. Proceso honey y secado natural.', 'Café exótico de origen Pitalito, Huila, cultivado a 1.850 m s. n. m. Su variedad Geisha, proceso honey y secado natural dan vida a una experiencia de café de origen cuidadosamente seleccionada.', 34500, 40, null,
          '{}'::text[], '{"art":"tea","colors":["#F3E6D8","#4A2C1E"],"label":"Café Geisha"}'::jsonb, false, false, null, null,
          'aprobado', now(), now() - make_interval(mins => 998)
   from public.ambassadors a, public.categories c where a.code = 'EM0001' and c.code = 'CAF'
@@ -61,7 +61,7 @@ select product_id, '/img/products/EM0001_12.webp', '/img/products/EM0001_12-400.
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Café exótico Pacamara en grano · 500 g', 'Pitalito, 1.800 msnm. Proceso honey y secado natural.', 'Café Exótico Pacamara, de origen Huila (Pitalito), cultivado a 1800 msnm, proceso honey y secado natural', 72500, 10, 500,
+  select a.id, c.id, 'Café exótico Pacamara en grano · 500 g', 'Pitalito, 1.800 msnm. Proceso honey y secado natural.', 'Café exótico de Pitalito, Huila, cultivado a 1.800 m s. n. m. en variedad Pacamara, con proceso honey y secado natural. Una presentación en grano para quienes prefieren moler el café al momento de prepararlo.', 72500, 10, 500,
          '{}'::text[], '{"art":"tea","colors":["#F3E6D8","#4A2C1E"],"label":"Café Pacamara"}'::jsonb, false, false, 'EM0001_3', '{"format":"Bolsa doypack, válvula y cierre zip 13,5 x 26 cm","weight_g":500,"height_cm":25,"width_cm":13.5,"depth_cm":6}'::jsonb,
          'aprobado', now(), now() - make_interval(mins => 997)
   from public.ambassadors a, public.categories c where a.code = 'EM0001' and c.code = 'CAF'
@@ -77,7 +77,7 @@ select product_id, '/img/products/EM0001_6.webp', '/img/products/EM0001_6-400.we
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Café especial Bourbon Rosado · tueste medio', 'Pitalito, 1.800 msnm. Proceso honey y secado natural.', 'Café Especial, de origen Huila (Pitalito), cultivado a 1800 msnm, proceso honey y secado natural', 24500, 40, null,
+  select a.id, c.id, 'Café especial Bourbon Rosado · tueste medio', 'Pitalito, 1.800 msnm. Proceso honey y secado natural.', 'Café especial de Pitalito, Huila, variedad Bourbon Rosado, cultivado a 1.800 m s. n. m. y elaborado mediante proceso honey y secado natural. Ideal para preparar y disfrutar una taza de café de origen.', 24500, 40, null,
          '{}'::text[], '{"art":"tea","colors":["#F3E6D8","#4A2C1E"],"label":"Bourbon Rosado"}'::jsonb, false, false, null, null,
          'aprobado', now(), now() - make_interval(mins => 996)
   from public.ambassadors a, public.categories c where a.code = 'EM0001' and c.code = 'CAF'
@@ -105,7 +105,7 @@ select product_id, '/img/products/EM0001_8.webp', '/img/products/EM0001_8-400.we
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Chocolate de mesa 100% cacao', 'Sin endulzantes, desde nuestro cultivo. Caja de 250 g.', 'Chocolate de mesa artesanal 100% cacao, sin endulzantes, desde nuestro cultivo y elaborado con respeto al medio ambiente', 24000, 10, 250,
+  select a.id, c.id, 'Chocolate de mesa 100% cacao', 'Sin endulzantes, desde nuestro cultivo. Caja de 250 g.', 'Chocolate de mesa artesanal elaborado con cacao de cultivo propio. No contiene endulzantes y se produce con respeto por el medio ambiente, para disfrutar el sabor auténtico del cacao.', 24000, 10, 250,
          '{}'::text[], '{"art":"bar","colors":["#FCEFC2","#6B2F22"]}'::jsonb, false, false, 'EM0003_1', '{"format":"Caja","weight_g":250,"height_cm":4,"width_cm":14,"depth_cm":9}'::jsonb,
          'aprobado', now(), now() - make_interval(mins => 995)
   from public.ambassadors a, public.categories c where a.code = 'EM0003' and c.code = 'CHO'
@@ -119,7 +119,7 @@ select product_id, '/img/products/EM0003_1.webp', '/img/products/EM0003_1-400.we
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Chocolate de mesa 100% cacao con cardamomo y canela', 'Sin endulzantes, con cardamomo y canela. Caja de 250 g.', 'Chocolate de mesa artesanal 100% cacao, sin endulzantes, desde nuestro cultivo y elaborado con respeto al medio ambiente. Con sabor a cardamomo y canela', 25000, 10, 250,
+  select a.id, c.id, 'Chocolate de mesa 100% cacao con cardamomo y canela', 'Sin endulzantes, con cardamomo y canela. Caja de 250 g.', 'Chocolate de mesa artesanal 100 % cacao, sin endulzantes, elaborado con cacao de cultivo propio. Su combinación de cardamomo y canela aporta un perfil especiado y aromático.', 25000, 10, 250,
          array['Más vendido'], '{"art":"bar","colors":["#FCEFC2","#6B2F22"]}'::jsonb, false, false, 'EM0003_2', '{"format":"Caja","weight_g":250,"height_cm":4,"width_cm":14,"depth_cm":9}'::jsonb,
          'aprobado', now(), now() - make_interval(mins => 994)
   from public.ambassadors a, public.categories c where a.code = 'EM0003' and c.code = 'CHO'
@@ -133,7 +133,7 @@ select product_id, '/img/products/EM0003_2.webp', '/img/products/EM0003_2-400.we
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Chocolate de mesa 100% cacao con nuez moscada y clavos', 'Sin endulzantes, con nuez moscada y clavos. Bolsa de 250 g.', 'Chocolate de mesa artesanal 100% cacao, sin endulzantes, desde nuestro cultivo y elaborado con respeto al medio ambiente. Sabor nuez moscada y clavos', 25000, 10, 250,
+  select a.id, c.id, 'Chocolate de mesa 100% cacao con nuez moscada y clavos', 'Sin endulzantes, con nuez moscada y clavos. Bolsa de 250 g.', 'Chocolate de mesa artesanal 100 % cacao, sin endulzantes, elaborado con cacao de cultivo propio. La nuez moscada y los clavos aportan notas especiadas a esta preparación tradicional.', 25000, 10, 250,
          '{}'::text[], '{"art":"bar","colors":["#FCEFC2","#6B2F22"]}'::jsonb, false, false, 'EM0003_3', '{"format":"Bolsa","weight_g":250,"height_cm":22,"width_cm":13,"depth_cm":5}'::jsonb,
          'aprobado', now(), now() - make_interval(mins => 993)
   from public.ambassadors a, public.categories c where a.code = 'EM0003' and c.code = 'CHO'
@@ -147,7 +147,7 @@ select product_id, '/img/products/EM0003_3.webp', '/img/products/EM0003_3-400.we
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Nibs de cacao', 'Cacao tostado 100% natural y crujiente. 150 g.', 'Trozos de cacao tostado 100% natural, crujientes y llenos de sabor. Perfectos para snacks, postres y bebidas.', 19500, 10, 150,
+  select a.id, c.id, 'Nibs de cacao', 'Cacao tostado 100% natural y crujiente. 150 g.', 'Trozos de cacao tostado 100 % natural, crujientes y llenos de sabor. Una opción versátil para disfrutar como snack o incorporar en postres y bebidas.', 19500, 10, 150,
          '{}'::text[], '{"art":"bar","colors":["#FCEFC2","#6B2F22"],"label":"Nibs de cacao"}'::jsonb, false, false, 'EM0003_4', '{"format":"Bolsa","weight_g":150,"height_cm":20,"width_cm":10,"depth_cm":3}'::jsonb,
          'aprobado', now(), now() - make_interval(mins => 992)
   from public.ambassadors a, public.categories c where a.code = 'EM0003' and c.code = 'CHO'
@@ -161,7 +161,7 @@ select product_id, '/img/products/EM0003_4.webp', '/img/products/EM0003_4-400.we
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Almendra de cacao tostada', 'Grano tostado con su cascarilla natural. 300 g.', 'Cacao tostado en grano con su cascarilla natural, conservando todo su aroma y esencia.', 20000, 10, 300,
+  select a.id, c.id, 'Almendra de cacao tostada', 'Grano tostado con su cascarilla natural. 300 g.', 'Granos de cacao tostados con su cascarilla natural, que conservan el aroma y la esencia propios del cacao. Una presentación para quienes disfrutan su sabor en estado natural.', 20000, 10, 300,
          '{}'::text[], '{"art":"bar","colors":["#FCEFC2","#6B2F22"],"label":"Cacao tostado"}'::jsonb, false, false, 'EM0003_5', '{"format":"Bolsa","weight_g":300,"height_cm":22,"width_cm":12,"depth_cm":6}'::jsonb,
          'aprobado', now(), now() - make_interval(mins => 991)
   from public.ambassadors a, public.categories c where a.code = 'EM0003' and c.code = 'CHO'
@@ -175,7 +175,7 @@ select product_id, '/img/products/EM0003_5.webp', '/img/products/EM0003_5-400.we
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Chocolate de mesa artesanal tradicional en bolitas', 'Cacao huilense con panela, canela y clavos.', 'Chocolate de mesa artesanal elaborado con cacao huilense de alta calidad, endulzado con panela y aliñado con canela y clavos, que brindan un sabor tradicional y un aroma inconfundible. Su presentación en bolitas, ideal para preparar una auténtica taza de chocolate colombiano.', 21000, 20, null,
+  select a.id, c.id, 'Chocolate de mesa artesanal tradicional en bolitas', 'Cacao huilense con panela, canela y clavos.', 'Chocolate artesanal elaborado con cacao huilense de alta calidad, endulzado con panela y sazonado con canela y clavos. Viene en bolitas para preparar una auténtica taza de chocolate colombiano.', 21000, 20, null,
          array['Ganador FICCA 2024'], '{"art":"ball","colors":["#F6E7C9","#5A2E1E"]}'::jsonb, true, false, null, null,
          'aprobado', now(), now() - make_interval(mins => 990)
   from public.ambassadors a, public.categories c where a.code = 'EM0004' and c.code = 'CHO'
@@ -195,7 +195,7 @@ select product_id, '/img/products/EM0004_2.webp', '/img/products/EM0004_2-400.we
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Chocolate de mesa artesanal 100% cacao en bolitas', 'Sin azúcar añadida, con clavos y canela. 125 g.', 'Chocolate de mesa artesanal 100% cacao. Chocolate de alta calidad, sin azúcar añadida, con clavos y canela, para disfrutar el sabor, aroma y carácter natural del cacao en su máxima expresión. Su presentación en bolitas facilita la preparación de una auténtica taza de chocolate colombiano, con un perfil intenso y profundo. Ideal para quienes prefieren un chocolate puro y lleno de sabor.', 28000, 10, 125,
+  select a.id, c.id, 'Chocolate de mesa artesanal 100% cacao en bolitas', 'Sin azúcar añadida, con clavos y canela. 125 g.', 'Chocolate artesanal 100 % cacao, sin azúcar añadida, con clavos y canela. Su presentación en bolitas permite preparar una bebida de sabor intenso y carácter natural.', 28000, 10, 125,
          '{}'::text[], '{"art":"ball","colors":["#F6E7C9","#5A2E1E"]}'::jsonb, false, false, 'EM0004_3', '{"weight_g":125,"height_cm":15,"width_cm":10,"depth_cm":5}'::jsonb,
          'aprobado', now(), now() - make_interval(mins => 989)
   from public.ambassadors a, public.categories c where a.code = 'EM0004' and c.code = 'CHO'
@@ -209,7 +209,7 @@ select product_id, '/img/products/EM0004_3.webp', '/img/products/EM0004_3-400.we
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Nibs de cacao tostados', '100% cacao, textura crujiente. 125 g.', 'Nibs de cacao tostados y triturados, obtenidos a partir de granos de cacao de alta calidad. Producto 100% cacao, de textura crujiente y sabor y aroma intensos, característicos del cacao tostado.', 26000, 10, 125,
+  select a.id, c.id, 'Nibs de cacao tostados', '100% cacao, textura crujiente. 125 g.', 'Nibs tostados y triturados a partir de granos de cacao de alta calidad. Producto 100 % cacao, de textura crujiente y sabor y aroma intensos, característicos del cacao tostado.', 26000, 10, 125,
          '{}'::text[], '{"art":"bar","colors":["#FCEFC2","#6B2F22"],"label":"Nibs de cacao"}'::jsonb, false, false, 'EM0004_4', '{"format":"Bolsa","weight_g":125,"height_cm":20,"width_cm":12,"depth_cm":3}'::jsonb,
          'aprobado', now(), now() - make_interval(mins => 988)
   from public.ambassadors a, public.categories c where a.code = 'EM0004' and c.code = 'CHO'
@@ -223,7 +223,7 @@ select product_id, '/img/products/EM0004_4.webp', '/img/products/EM0004_4-400.we
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Nibs de cacao cubiertos con chocolate al 60%', 'Un snack crujiente y lleno de energía. 125 g.', 'Nibs de cacao tostados y triturados, recubiertos con chocolate al 60%, elaborados a partir de cacao de alta calidad. Producto de textura crujiente, con intenso sabor y aroma característico del cacao. Un snack perfecto lleno de energía', 26000, 10, 125,
+  select a.id, c.id, 'Nibs de cacao cubiertos con chocolate al 60%', 'Un snack crujiente y lleno de energía. 125 g.', 'Nibs de cacao tostados y triturados, recubiertos con chocolate al 60 %. Un snack crujiente elaborado a partir de cacao de alta calidad, con sabor y aroma característicos.', 26000, 10, 125,
          '{}'::text[], '{"art":"bar","colors":["#FCEFC2","#6B2F22"],"label":"Nibs con chocolate"}'::jsonb, false, false, 'EM0004_5', '{"format":"Bolsa","weight_g":125,"height_cm":20,"width_cm":12,"depth_cm":3}'::jsonb,
          'aprobado', now(), now() - make_interval(mins => 987)
   from public.ambassadors a, public.categories c where a.code = 'EM0004' and c.code = 'CHO'
@@ -237,7 +237,7 @@ select product_id, '/img/products/EM0004_5.webp', '/img/products/EM0004_5-400.we
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Pocillo chocolatero tallado "Huilensidad"', 'Pocillo para servir a la mesa, alusivo al Huila.', 'Pocillo para servir a la mesa alusivo al huila', 25000, 10, 220,
+  select a.id, c.id, 'Pocillo chocolatero tallado huilense', 'Pocillo para servir a la mesa, alusivo al Huila.', 'Pocillo para servir a la mesa, con diseño alusivo al Huila. Una pieza artesanal que lleva la identidad regional a los momentos de compartir una bebida caliente.', 25000, 10, 220,
          '{}'::text[], '{"art":"bar","colors":["#F7E6DA","#B14A3A"],"label":"Pocillo tallado"}'::jsonb, false, false, 'EM0005_1', '{"format":"CAJA","weight_g":220,"height_cm":14,"width_cm":12,"depth_cm":12}'::jsonb,
          'aprobado', now(), now() - make_interval(mins => 986)
   from public.ambassadors a, public.categories c where a.code = 'EM0005' and c.code = 'ART'
@@ -245,13 +245,13 @@ with p as (
 )
 insert into seed_products select 'artbacu-pocillo', id from p;
 insert into public.product_images (product_id, url, thumb_url, alt, width, height, sort_order)
-select product_id, '/img/products/EM0005_1.webp', '/img/products/EM0005_1-400.webp', 'Pocillo chocolatero tallado "Huilensidad"', 1200, 800, 0 from seed_products where key = 'artbacu-pocillo';
+select product_id, '/img/products/EM0005_1.webp', '/img/products/EM0005_1-400.webp', 'Pocillo chocolatero tallado huilense', 1200, 800, 0 from seed_products where key = 'artbacu-pocillo';
 
 -- apifit-miel (EM0006_4, EM0006_1)
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Miel de abejas natural', 'Miel pura de abejas del Huila.', 'Miel de Abejas Natural Presentación de 450g', 29990, 20, null,
+  select a.id, c.id, 'Miel de abejas natural', 'Miel pura de abejas del Huila.', 'Miel de abejas natural, en botella de 500 g o envase de vidrio de 450 g. Un producto versátil para tener en casa y acompañar bebidas, desayunos y diferentes recetas.', 29990, 20, null,
          '{}'::text[], '{"art":"jar","colors":["#FFF4CC","#E59A00"]}'::jsonb, true, false, null, null,
          'aprobado', now(), now() - make_interval(mins => 985)
   from public.ambassadors a, public.categories c where a.code = 'EM0006' and c.code = 'MIE'
@@ -271,7 +271,7 @@ select product_id, '/img/products/EM0006_1.webp', '/img/products/EM0006_1-400.we
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Miel con jengibre y limón', 'Frasco de vidrio de 250 g.', 'Miel + Jengibre y Limón Presentación de 250g', 26990, 10, 250,
+  select a.id, c.id, 'Miel con jengibre y limón', 'Frasco de vidrio de 250 g.', 'Combinación de miel, jengibre y limón en envase de vidrio. Una mezcla de sabores para disfrutar sola o como complemento de bebidas y preparaciones.', 26990, 10, 250,
          '{}'::text[], '{"art":"jar","colors":["#FFF4CC","#E59A00"],"label":"Miel y jengibre"}'::jsonb, false, false, 'EM0006_2', '{"format":"Envase de Vidrio","weight_g":250,"height_cm":8,"width_cm":7.5,"depth_cm":7}'::jsonb,
          'aprobado', now(), now() - make_interval(mins => 984)
   from public.ambassadors a, public.categories c where a.code = 'EM0006' and c.code = 'MIE'
@@ -285,7 +285,7 @@ select product_id, '/img/products/EM0006_2.webp', '/img/products/EM0006_2-400.we
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Propóleo con miel, eucalipto y extracto de marañón', 'Frasco de vidrio de 300 g.', 'Propóleo + Miel, Eucalipto y extracto de Marañón Presentación de 300g', 29990, 10, 250,
+  select a.id, c.id, 'Propóleo con miel, eucalipto y extracto de marañón', 'Frasco de vidrio de 300 g.', 'Preparación que reúne propóleo, miel, eucalipto y extracto de marañón en un práctico envase de vidrio. Una combinación de ingredientes en una sola presentación.', 29990, 10, 250,
          '{}'::text[], '{"art":"jar","colors":["#FFF4CC","#E59A00"],"label":"Propóleo y miel"}'::jsonb, false, false, 'EM0006_3', '{"format":"Envase de Vidrio","weight_g":250,"height_cm":10.5,"width_cm":6,"depth_cm":6}'::jsonb,
          'aprobado', now(), now() - make_interval(mins => 983)
   from public.ambassadors a, public.categories c where a.code = 'EM0006' and c.code = 'MIE'
@@ -299,7 +299,7 @@ select product_id, '/img/products/EM0006_3.webp', '/img/products/EM0006_3-400.we
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Miel con cacao', 'Frasco de vidrio de 250 g.', 'Miel + Cacao Presentación de 250g', 26990, 10, 250,
+  select a.id, c.id, 'Miel con cacao', 'Frasco de vidrio de 250 g.', 'Una combinación de miel y cacao en envase de vidrio. Una propuesta para disfrutar nuevos matices de sabor en desayunos, bebidas y preparaciones dulces.', 26990, 10, 250,
          '{}'::text[], '{"art":"jar","colors":["#FFF4CC","#E59A00"],"label":"Miel y cacao"}'::jsonb, false, false, 'EM0006_5', '{"format":"Envase de Vidrio","weight_g":250,"height_cm":8,"width_cm":7.5,"depth_cm":7}'::jsonb,
          'aprobado', now(), now() - make_interval(mins => 982)
   from public.ambassadors a, public.categories c where a.code = 'EM0006' and c.code = 'MIE'
@@ -313,7 +313,7 @@ select product_id, '/img/products/EM0006_5.webp', '/img/products/EM0006_5-400.we
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Achiras Bambuqueras', 'Achiras huilenses en caja de 75 g.', 'Achiras', 10000, 10, 75,
+  select a.id, c.id, 'Achiras Bambuqueras', 'Achiras huilenses en caja de 75 g.', 'Achiras tradicionales en presentación de caja. Un producto de sabor regional, ideal para compartir o llevar como detalle representativo del Huila.', 10000, 10, 75,
          '{}'::text[], '{"art":"achira","colors":["#FDEBD0","#D98A1F"]}'::jsonb, false, false, 'EM0007_1', '{"format":"Caja","weight_g":75,"height_cm":10,"width_cm":20,"depth_cm":10}'::jsonb,
          'aprobado', now(), now() - make_interval(mins => 981)
   from public.ambassadors a, public.categories c where a.code = 'EM0007' and c.code = 'TIP'
@@ -327,7 +327,7 @@ select product_id, '/img/products/EM0007_1.webp', '/img/products/EM0007_1-400.we
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Abanico Écru en madera de cedro', 'Pieza de estilo con estructura en cedro achapo.', 'El equilibrio perfecto entre presencia y practicidad. Compact encuentra su lugar entre lo esencial y lo protagonista: un formato versátil, cómodo y sofisticado que se adapta con naturalidad a diferentes ocasiones. Su tamaño ofrece una mayor amplitud al abanicar, manteniendo la ligereza que caracteriza a Macchi Infinite.', 75000, 20, null,
+  select a.id, c.id, 'Abanico Écru en madera de cedro', 'Pieza de estilo con estructura en cedro achapo.', 'Abanico de la línea Macchi Infinite con estructura en madera de cedro achapo, en formato Compact (24 cm) o Standard (28 cm). Un accesorio funcional y de estilo que ofrece amplitud al abanicar sin perder ligereza.', 75000, 20, null,
          '{}'::text[], '{"art":"bar","colors":["#F7E6DA","#B14A3A"],"label":"Abanico"}'::jsonb, false, false, null, null,
          'aprobado', now(), now() - make_interval(mins => 980)
   from public.ambassadors a, public.categories c where a.code = 'EM0008' and c.code = 'ART'
@@ -347,7 +347,7 @@ select product_id, '/img/products/EM0008_1.webp', '/img/products/EM0008_1-400.we
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Abanico Noche Standard · 28 cm', 'La versión más imponente, en cedro achapo.', 'La versión más imponente de Macchi Infinite. Standard lleva el abanico a una dimensión de mayor presencia, convirtiéndolo en un verdadero accesorio de estilo. Su apertura generosa y su estructura en madera de cedro achapo hacen de este formato una pieza que se disfruta tanto por su funcionalidad como por su carácter. Es el abanico para quienes entienden los accesorios como una declaración silenciosa de elegancia.', 95000, 10, 100,
+  select a.id, c.id, 'Abanico Noche Standard · 28 cm', 'La versión más imponente, en cedro achapo.', 'La versión más imponente de la línea Macchi Infinite. Su apertura generosa y estructura en madera de cedro achapo hacen de este abanico un accesorio que combina funcionalidad y estilo.', 95000, 10, 100,
          '{}'::text[], '{"art":"bar","colors":["#F7E6DA","#B14A3A"],"label":"Abanico"}'::jsonb, false, false, 'EM0008_3', '{"format":"Bolsa tela","weight_g":100,"height_cm":30,"width_cm":15,"depth_cm":4}'::jsonb,
          'aprobado', now(), now() - make_interval(mins => 979)
   from public.ambassadors a, public.categories c where a.code = 'EM0008' and c.code = 'ART'
@@ -361,7 +361,7 @@ select product_id, '/img/products/EM0008_3.webp', '/img/products/EM0008_3-400.we
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Abanico Panthère Compact · 24 cm', 'Versátil, cómodo y sofisticado.', 'El equilibrio perfecto entre presencia y practicidad. Compact encuentra su lugar entre lo esencial y lo protagonista: un formato versátil, cómodo y sofisticado que se adapta con naturalidad a diferentes ocasiones. Su tamaño ofrece una mayor amplitud al abanicar, manteniendo la ligereza que caracteriza a Macchi Infinite.', 75000, 10, 90,
+  select a.id, c.id, 'Abanico Panthère Compact · 24 cm', 'Versátil, cómodo y sofisticado.', 'Un abanico de formato compacto, versátil y sofisticado. Su tamaño ofrece una buena amplitud al abanicar, manteniendo la ligereza que caracteriza a Macchi Infinite.', 75000, 10, 90,
          '{}'::text[], '{"art":"bar","colors":["#F7E6DA","#B14A3A"],"label":"Abanico"}'::jsonb, false, false, 'EM0008_4', '{"format":"Bolsa tela","weight_g":90,"height_cm":28,"width_cm":15,"depth_cm":4}'::jsonb,
          'aprobado', now(), now() - make_interval(mins => 978)
   from public.ambassadors a, public.categories c where a.code = 'EM0008' and c.code = 'ART'
@@ -375,7 +375,7 @@ select product_id, '/img/products/EM0008_4.webp', '/img/products/EM0008_4-400.we
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Chocolate de mesa en barra 100% cacao · 250 g', 'Barra de chocolate de mesa 100% cacao.', 'Chocolate de mesa en barra 100% cacao en presentación de 250 g', 30000, 10, 250,
+  select a.id, c.id, 'Chocolate de mesa en barra 100% cacao · 250 g', 'Barra de chocolate de mesa 100% cacao.', 'Chocolate de mesa en barra, elaborado con 100 % cacao. Una presentación de 250 gramos para preparar bebidas y disfrutar el carácter propio del cacao.', 30000, 10, 250,
          '{}'::text[], '{"art":"bar","colors":["#FCEFC2","#6B2F22"]}'::jsonb, false, false, 'EM0009_1', '{"format":"Caja","weight_g":250,"height_cm":13,"width_cm":2.8,"depth_cm":11}'::jsonb,
          'aprobado', now(), now() - make_interval(mins => 977)
   from public.ambassadors a, public.categories c where a.code = 'EM0009' and c.code = 'CHO'
@@ -389,7 +389,7 @@ select product_id, '/img/products/EM0009_1.webp', '/img/products/EM0009_1-400.we
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Chocolate al 55%: amazónico, mexicano, enchilado, sal y pimienta', 'Chocolate de consumo directo, 45 g.', 'Chocolate amazónico, mexicano, enchilado, sal y pimienta al 55%', 15000, 10, 45,
+  select a.id, c.id, 'Chocolate al 55%: amazónico, mexicano, enchilado, sal y pimienta', 'Chocolate de consumo directo, 45 g.', 'Chocolate amazónico y mexicano, además de variedades enchiladas y con sal y pimienta. Elaborado con 55 % de cacao, en una presentación práctica para disfrutar directamente.', 15000, 10, 45,
          '{}'::text[], '{"art":"bar","colors":["#FCEFC2","#6B2F22"]}'::jsonb, false, false, 'EM0009_2', '{"format":"Caja","weight_g":45,"height_cm":11,"width_cm":0.7,"depth_cm":7}'::jsonb,
          'aprobado', now(), now() - make_interval(mins => 976)
   from public.ambassadors a, public.categories c where a.code = 'EM0009' and c.code = 'CHO'
@@ -403,7 +403,7 @@ select product_id, '/img/products/EM0009_2.webp', '/img/products/EM0009_2-400.we
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Chocolatinas al 55%, 70% y 75%', 'Chocolate de consumo directo, 90 g.', 'Chocolatinas al 55%, 70% y 75%', 20000, 10, 90,
+  select a.id, c.id, 'Chocolatinas al 55%, 70% y 75%', 'Chocolate de consumo directo, 90 g.', 'Chocolatina disponible en diferentes porcentajes de cacao: 55 %, 70 % y 75 %. Una opción para elegir la intensidad de chocolate que prefieras.', 20000, 10, 90,
          '{}'::text[], '{"art":"bar","colors":["#FCEFC2","#6B2F22"]}'::jsonb, false, false, 'EM0009_3', '{"format":"Caja","weight_g":90,"height_cm":20,"width_cm":0.7,"depth_cm":8}'::jsonb,
          'aprobado', now(), now() - make_interval(mins => 975)
   from public.ambassadors a, public.categories c where a.code = 'EM0009' and c.code = 'CHO'
@@ -417,7 +417,7 @@ select product_id, '/img/products/EM0009_3.webp', '/img/products/EM0009_3-400.we
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Chocolate intenso al 80% y 90%', 'Chocolate de consumo directo, 90 g.', 'Chocolate de consumo directo al 80% y 90%', 25000, 10, 90,
+  select a.id, c.id, 'Chocolate intenso al 80% y 90%', 'Chocolate de consumo directo, 90 g.', 'Chocolate de consumo directo en variedades de 80 % y 90 % de cacao, para quienes prefieren un perfil de sabor más intenso.', 25000, 10, 90,
          '{}'::text[], '{"art":"bar","colors":["#FCEFC2","#6B2F22"]}'::jsonb, false, false, 'EM0009_4', '{"format":"Caja","weight_g":90,"height_cm":20,"width_cm":0.7,"depth_cm":8}'::jsonb,
          'aprobado', now(), now() - make_interval(mins => 974)
   from public.ambassadors a, public.categories c where a.code = 'EM0009' and c.code = 'CHO'
@@ -431,7 +431,7 @@ select product_id, '/img/products/EM0009_4.webp', '/img/products/EM0009_4-400.we
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Nibs de cacao caramelizados', 'Bolsa de 50 g.', 'Nibs de cacao caramelizados', 15000, 10, 50,
+  select a.id, c.id, 'Nibs de cacao caramelizados', 'Bolsa de 50 g.', 'Nibs de cacao caramelizados en una presentación práctica. Una alternativa crujiente para disfrutar como snack o acompañar otras preparaciones.', 15000, 10, 50,
          '{}'::text[], '{"art":"bar","colors":["#FCEFC2","#6B2F22"],"label":"Nibs de cacao"}'::jsonb, false, false, 'EM0009_5', '{"format":"Bolsa","weight_g":50,"height_cm":10,"width_cm":3,"depth_cm":8}'::jsonb,
          'aprobado', now(), now() - make_interval(mins => 973)
   from public.ambassadors a, public.categories c where a.code = 'EM0009' and c.code = 'CHO'
@@ -445,7 +445,7 @@ select product_id, '/img/products/EM0009_5.webp', '/img/products/EM0009_5-400.we
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Chocolate de mesa en bola 100% cacao con nuez moscada, canela y clavos', 'Bolsa de 20 bolas.', 'Chocolate 100% con nuez moscada, canela y clavos', 46000, 10, 250,
+  select a.id, c.id, 'Chocolate de mesa en bola 100% cacao con nuez moscada, canela y clavos', 'Bolsa de 20 bolas.', 'Chocolate de mesa en bola elaborado con 100 % cacao y una mezcla de nuez moscada, canela y clavos. Una preparación de sabor profundo con notas especiadas.', 46000, 10, 250,
          '{}'::text[], '{"art":"ball","colors":["#F6E7C9","#5A2E1E"]}'::jsonb, false, false, 'EM0010_1', '{"format":"Bolsas de 20 unidades","weight_g":250,"height_cm":24,"width_cm":16.5,"depth_cm":5}'::jsonb,
          'aprobado', now(), now() - make_interval(mins => 972)
   from public.ambassadors a, public.categories c where a.code = 'EM0010' and c.code = 'CHO'
@@ -459,7 +459,7 @@ select product_id, '/img/products/EM0010_1.webp', '/img/products/EM0010_1-400.we
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Chocolate de mesa en bola 40% con nuez moscada, canela y clavos', 'Receta tradicional del desierto de la Tatacoa.', 'Chocolate 40% con nuez moscada, canela y clavos', 18000, 20, null,
+  select a.id, c.id, 'Chocolate de mesa en bola 40% con nuez moscada, canela y clavos', 'Receta tradicional del desierto de la Tatacoa.', 'Chocolate de mesa en bola con 40 % de cacao, acompañado de nuez moscada, canela y clavos. Una opción para preparar una bebida tradicional y aromática.', 18000, 20, null,
          '{}'::text[], '{"art":"ball","colors":["#F6E7C9","#5A2E1E"]}'::jsonb, false, false, null, null,
          'aprobado', now(), now() - make_interval(mins => 971)
   from public.ambassadors a, public.categories c where a.code = 'EM0010' and c.code = 'CHO'
@@ -479,7 +479,7 @@ select product_id, '/img/products/EM0010_3.webp', '/img/products/EM0010_3-400.we
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Café especial Café Horizonte', 'Notas cítricas, achocolatadas y apaneladas. Incluye una semilla para sembrar.', 'Café especial Café Horizonte FC, molido, elaborado a partir de granos seleccionados de alta calidad, con notas sensoriales cítricas, achocolatadas y apaneladas, ofreciendo una taza balanceada, aromática y de excelente sabor. Presentación de 125 gramos (cuarto de libra), empacada en material semi biodegradable, bajo nuestro lema “Adopta tu árbol de café”. Cada empaque incluye una semilla para sembrar en casa, promoviendo una experiencia sostenible y una conexión más cercana con el origen del café.', 14000, 30, null,
+  select a.id, c.id, 'Café especial Café Horizonte', 'Notas cítricas, achocolatadas y apaneladas. Incluye una semilla para sembrar.', 'Café especial elaborado a partir de granos seleccionados de alta calidad. Presenta notas sensoriales cítricas, achocolatadas y apaneladas, que ofrecen una taza balanceada, aromática y de excelente sabor.', 14000, 30, null,
          '{}'::text[], '{"art":"tea","colors":["#F3E6D8","#4A2C1E"],"label":"Café Horizonte"}'::jsonb, false, false, null, null,
          'aprobado', now(), now() - make_interval(mins => 970)
   from public.ambassadors a, public.categories c where a.code = 'EM0011' and c.code = 'CAF'
@@ -503,7 +503,7 @@ select product_id, '/img/products/EM0011_1.webp', '/img/products/EM0011_1-400.we
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Cerveza artesanal INDIAN · Pureza Alemana', 'Malta, lúpulo, levadura y agua, según la ley de pureza alemana.', 'El proceso de elaboración de la cerveza INDIAN se adhiere fielmente a las prácticas tradicionales, respetando la ley de pureza alemana, conocida como "Reinheitsgebot". En esta ley, la malta, el lúpulo, la levadura y el agua son los únicos ingredientes principales permitidos en la cerveza. Siguiendo estos principios y respetando los tiempos adecuados de fermentación y maduración, logramos brindar a tu paladar la mejor experiencia sensorial con una auténtica cerveza artesanal', 288000, 10, 8400,
+  select a.id, c.id, 'Cerveza artesanal INDIAN · Pureza Alemana', 'Malta, lúpulo, levadura y agua, según la ley de pureza alemana.', 'Cerveza elaborada siguiendo prácticas tradicionales y los principios de la ley alemana de pureza Reinheitsgebot, que establece malta, lúpulo, levadura y agua como ingredientes principales permitidos.', 288000, 10, 8400,
          '{}'::text[], '{"art":"bar","colors":["#FFF1C7","#B8741A"],"label":"Cerveza artesanal"}'::jsonb, false, true, 'EM0012_1', '{"format":"Botella y barril","weight_g":8400,"height_cm":28,"width_cm":40,"depth_cm":21}'::jsonb,
          'aprobado', now(), now() - make_interval(mins => 969)
   from public.ambassadors a, public.categories c where a.code = 'EM0012' and c.code = 'TEB'
@@ -517,7 +517,7 @@ select product_id, '/img/products/EM0012_1.webp', '/img/products/EM0012_1-400.we
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Cerveza Gaitana Dorada · caja x 24', 'Tributo a la cacica Gaitana. 100% malta Pilsen, 5% a 5,5% de alcohol.', 'INDIAN rinde un tributo a la cacica Gaitana, heroína indígena que encarna la identidad, la soberanía y la fortaleza, así como el compromiso y el liderazgo ejemplar de las mujeres del pueblo huilense y de toda Colombia. Su legado es símbolo de inspiración y admiración, y nos sentimos honrados de rendirle homenaje a través de nuestro trabajo Esta exquisita cerveza, fina, delicada, meticulosamente elaborada y deliciosa, refleja la nobleza ancestral. Está elaborada con ingredientes de la más alta calidad, destinada a un público exigente y ávido de probar algo verdaderamente especial. "Gaitana Dorada" es la bebida perfecta y una excelente excusa para compartir momentos inolvidables con amigos y seres queridos Malta: elaborada con malta 100% Pilsen y lúpulos Nivel de alcohol: entre 5% y 5.5% Agua: 100% tratada con los más altos estándares de sanidad', 288000, 10, 8000,
+  select a.id, c.id, 'Cerveza Gaitana Dorada · caja x 24', 'Tributo a la cacica Gaitana. 100% malta Pilsen, 5% a 5,5% de alcohol.', 'Una cerveza que rinde homenaje a la cacica Gaitana, figura que representa identidad, soberanía, fortaleza y liderazgo de las mujeres huilenses y colombianas.', 288000, 10, 8000,
          '{}'::text[], '{"art":"bar","colors":["#FFF1C7","#B8741A"],"label":"Gaitana Dorada"}'::jsonb, false, true, 'EM0012_2', '{"format":"Caja de 24 unidades de botella","weight_g":8000,"height_cm":28,"width_cm":40,"depth_cm":21}'::jsonb,
          'aprobado', now(), now() - make_interval(mins => 968)
   from public.ambassadors a, public.categories c where a.code = 'EM0012' and c.code = 'TEB'
@@ -531,7 +531,7 @@ select product_id, '/img/products/EM0012_2.webp', '/img/products/EM0012_2-400.we
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Cerveza Serranía Roja · caja x 24', 'Homenaje a la Serranía de Chiribiquete. 5% a 5,5% de alcohol.', 'Evocamos la imponente grandeza de uno de los tesoros más significativos de Colombia: la Serranía de Chiribiquete y su parque natural, que se elevan majestuosos entre los departamentos del Guaviare y Caquetá. Su antigüedad revela evidencia irrefutable de que esta región del sur de Colombia albergó la presencia humana más antigua de todo el continente americano Malta: elaborada con malta 100% Pilsen y lúpulos de la más alta calidad Nivel de alcohol: entre 5% y 5.5% Agua: 100% tratada con los más altos estándares de sanidad', 288000, 10, 8000,
+  select a.id, c.id, 'Cerveza Serranía Rojas · caja x 24', 'Homenaje a la Serranía de Chiribiquete. 5% a 5,5% de alcohol.', 'Una cerveza inspirada en la Serranía de Chiribiquete, uno de los tesoros naturales de Colombia. Su nombre evoca la grandeza de este territorio entre Guaviare y Caquetá.', 288000, 10, 8000,
          '{}'::text[], '{"art":"bar","colors":["#FFF1C7","#B8741A"],"label":"Serranía Roja"}'::jsonb, false, true, 'EM0012_3', '{"format":"Caja de 24 botellas","weight_g":8000,"height_cm":28,"width_cm":40,"depth_cm":21}'::jsonb,
          'aprobado', now(), now() - make_interval(mins => 967)
   from public.ambassadors a, public.categories c where a.code = 'EM0012' and c.code = 'TEB'
@@ -539,13 +539,13 @@ with p as (
 )
 insert into seed_products select 'indian-serrania', id from p;
 insert into public.product_images (product_id, url, thumb_url, alt, width, height, sort_order)
-select product_id, '/img/products/EM0012_3.webp', '/img/products/EM0012_3-400.webp', 'Cerveza Serranía Roja · caja x 24', 800, 1200, 0 from seed_products where key = 'indian-serrania';
+select product_id, '/img/products/EM0012_3.webp', '/img/products/EM0012_3-400.webp', 'Cerveza Serranía Rojas · caja x 24', 800, 1200, 0 from seed_products where key = 'indian-serrania';
 
 -- maca-cafe (EM0014_1)
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Candongas Grano de Café', 'Zamak con baño de oro de 24 K. Colección Raíces de mi Tierra.', 'Elaboradas en zamak con baño de oro de 24kt y laca cataforética. Dije de grano de café inspirado en nuestras raíces. Largo: 4 cm', 95200, 10, 13,
+  select a.id, c.id, 'Candongas Grano de Café', 'Zamak con baño de oro de 24 K. Colección Raíces de mi Tierra.', 'Dije elaborado en zamak con baño de oro de 24 quilates y laca cataforética. Inspirado en el grano de café y en las raíces del territorio. Se entrega en caja tipo libro con mensaje de inspiración, protegida por una bolsa.', 95200, 10, 13,
          '{}'::text[], '{"art":"bar","colors":["#F7EFD9","#8A6A1F"],"label":"Joyería"}'::jsonb, false, false, 'EM0014_1', '{"format":"Cada pieza de Raíces de mi Tierra se entrega en una caja tipo libro, diseñada especialmente para la colección y con un mensaje que cuenta su esencia e inspiración. La caja se entrega protegida dentro de su bolsa, lista para regalar o conservar.","weight_g":13,"height_cm":16,"width_cm":12,"depth_cm":7}'::jsonb,
          'aprobado', now(), now() - make_interval(mins => 966)
   from public.ambassadors a, public.categories c where a.code = 'EM0014' and c.code = 'MOD'
@@ -559,7 +559,7 @@ select product_id, '/img/products/EM0014_1.webp', '/img/products/EM0014_1-400.we
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Candongas Flor de Cholupa', 'Zamak con baño de oro de 24 K. Colección Raíces de mi Tierra.', 'Inspirados en la Passiflora, flor de la cholupa, símbolo de nuestra tierra. Elaborados en zamak, con baño de oro de 24K y laca cataforética. Una pieza que lleva la esencia del Huila en cada detalle.', 95200, 10, 13,
+  select a.id, c.id, 'Candongas Flor de Cholupa', 'Zamak con baño de oro de 24 K. Colección Raíces de mi Tierra.', 'Pieza inspirada en la flor de la cholupa, símbolo de la tierra huilense. Elaborada en zamak con baño de oro de 24 quilates y laca cataforética; se presenta en caja tipo libro con mensaje de inspiración.', 95200, 10, 13,
          '{}'::text[], '{"art":"bar","colors":["#F7EFD9","#8A6A1F"],"label":"Joyería"}'::jsonb, false, false, 'EM0014_2', '{"format":"Cada pieza de Raíces de mi Tierra se entrega en una caja tipo libro, diseñada especialmente para la colección y con un mensaje que cuenta su esencia e inspiración. La caja se entrega protegida dentro de su bolsa, lista para regalar o conservar.","weight_g":13,"height_cm":16,"width_cm":12,"depth_cm":7}'::jsonb,
          'aprobado', now(), now() - make_interval(mins => 965)
   from public.ambassadors a, public.categories c where a.code = 'EM0014' and c.code = 'MOD'
@@ -573,7 +573,7 @@ select product_id, '/img/products/EM0014_2.webp', '/img/products/EM0014_2-400.we
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Candongas Chiva', 'Zamak con baño de oro de 24 K. Colección Raíces de mi Tierra.', 'Inspirados en la tradicional chiva, ícono de nuestra cultura y de los caminos de nuestra tierra. Elaborados en zamak, con baño de oro de 24K y laca cataforética. Una pieza llena de identidad huilense.', 95200, 10, 13,
+  select a.id, c.id, 'Candongas Chiva', 'Zamak con baño de oro de 24 K. Colección Raíces de mi Tierra.', 'Candongas inspiradas en la chiva, ícono de la cultura y los caminos de nuestra tierra. Elaboradas en zamak con baño de oro de 24 quilates y laca cataforética, evocan la identidad huilense.', 95200, 10, 13,
          '{}'::text[], '{"art":"bar","colors":["#F7EFD9","#8A6A1F"],"label":"Joyería"}'::jsonb, false, false, 'EM0014_3', '{"format":"Cada pieza de Raíces de mi Tierra se entrega en una caja tipo libro, diseñada especialmente para la colección y con un mensaje que cuenta su esencia e inspiración. La caja se entrega protegida dentro de su bolsa, lista para regalar o conservar.","weight_g":13,"height_cm":16,"width_cm":12,"depth_cm":7}'::jsonb,
          'aprobado', now(), now() - make_interval(mins => 964)
   from public.ambassadors a, public.categories c where a.code = 'EM0014' and c.code = 'MOD'
@@ -587,7 +587,7 @@ select product_id, '/img/products/EM0014_3.webp', '/img/products/EM0014_3-400.we
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Candongas Pareja del Sanjuanero', 'Zamak con baño de oro de 24 K. Colección Raíces de mi Tierra.', 'Inspirados en la tradicional pareja del Sanjuanero Huilense, símbolo de nuestra cultura, danza y tradición. Elaborados en zamak, con baño de oro de 24K y laca cataforética. Un pedacito del Huila convertido en joya.', 95200, 10, 13,
+  select a.id, c.id, 'Candongas Pareja del Sanjuanero', 'Zamak con baño de oro de 24 K. Colección Raíces de mi Tierra.', 'Una joya inspirada en la pareja del Sanjuanero Huilense, símbolo de cultura, danza y tradición. Elaborada en zamak con baño de oro de 24 quilates y laca cataforética, se entrega en caja tipo libro.', 95200, 10, 13,
          '{}'::text[], '{"art":"bar","colors":["#F7EFD9","#8A6A1F"],"label":"Joyería"}'::jsonb, false, false, 'EM0014_4', '{"format":"Cada pieza de Raíces de mi Tierra se entrega en una caja tipo libro, diseñada especialmente para la colección y con un mensaje que cuenta su esencia e inspiración. La caja se entrega protegida dentro de su bolsa, lista para regalar o conservar.","weight_g":13,"height_cm":16,"width_cm":12,"depth_cm":7}'::jsonb,
          'aprobado', now(), now() - make_interval(mins => 963)
   from public.ambassadors a, public.categories c where a.code = 'EM0014' and c.code = 'MOD'
@@ -601,7 +601,7 @@ select product_id, '/img/products/EM0014_4.webp', '/img/products/EM0014_4-400.we
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Collar Raíces', 'Chiva, cholupa, Sanjuanero, café y el Águila de San Agustín en una joya.', 'Una pieza que reúne símbolos emblemáticos del Huila: la chiva, la flor de cholupa, la pareja del Sanjuanero, el grano de café y el Águila de San Agustín. Elaborado en zamak con baño de oro de 24K y laca cataforética. Nuestra tierra convertida en joya.', 178500, 10, 32,
+  select a.id, c.id, 'Collar Raíces', 'Chiva, cholupa, Sanjuanero, café y el Águila de San Agustín en una joya.', 'Collar que reúne símbolos emblemáticos del Huila: la chiva, la flor de cholupa, la pareja del Sanjuanero, el grano de café y el Águila de San Agustín. Elaborado en zamak con baño de oro de 24 quilates y laca cataforética.', 178500, 10, 32,
          '{}'::text[], '{"art":"bar","colors":["#F7EFD9","#8A6A1F"],"label":"Joyería"}'::jsonb, false, false, 'EM0014_5', '{"format":"Cada pieza de Raíces de mi Tierra se entrega en una caja tipo libro, diseñada especialmente para la colección y con un mensaje que cuenta su esencia e inspiración. La caja se entrega protegida dentro de su bolsa, lista para regalar o conservar.","weight_g":32,"height_cm":16,"width_cm":12,"depth_cm":7}'::jsonb,
          'aprobado', now(), now() - make_interval(mins => 962)
   from public.ambassadors a, public.categories c where a.code = 'EM0014' and c.code = 'MOD'
@@ -615,7 +615,7 @@ select product_id, '/img/products/EM0014_5.webp', '/img/products/EM0014_5-400.we
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Vestido de baño Boyacá', 'Enterizo con escote cuadrado tejido y panty anudado.', 'Vestido de baño enterizo con escote cuadrado tejido y panty anudado', 350000, 10, 350,
+  select a.id, c.id, 'Vestido de baño Boyacá', 'Enterizo con escote cuadrado tejido y panty anudado.', 'Vestido de baño enterizo con escote cuadrado tejido y panty anudado. Una pieza de diseño resortwear pensada para destacar en días de sol y descanso.', 350000, 10, 350,
          array['Diseño huilense'], '{"art":"swim","colors":["#DDF0F2","#0B7A3B"]}'::jsonb, false, false, 'EM0002_1', '{"format":"Caja","weight_g":350,"height_cm":5,"width_cm":28,"depth_cm":28}'::jsonb,
          'aprobado', now(), now() - make_interval(mins => 961)
   from public.ambassadors a, public.categories c where a.code = 'EM0002' and c.code = 'MOD'
@@ -629,7 +629,7 @@ select product_id, '/img/products/EM0002_1.webp', '/img/products/EM0002_1-400.we
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Acacias Fit · té natural', 'Té natural en bolsitas.', 'Acacias fit, Es un té Natural', 35000, 10, 250,
+  select a.id, c.id, 'Acacias Fit · té natural', 'Té natural en bolsitas.', 'Té natural en presentación de bolsitas. Una opción práctica para preparar en casa y disfrutar en cualquier momento del día.', 35000, 10, 250,
          '{}'::text[], '{"art":"tea","colors":["#E8EFE2","#0B7A3B"]}'::jsonb, false, false, 'EM0016_1', '{"format":"Caja , bolsitas","weight_g":250,"height_cm":30,"width_cm":30,"depth_cm":30}'::jsonb,
          'aprobado', now(), now() - make_interval(mins => 960)
   from public.ambassadors a, public.categories c where a.code = 'EM0016' and c.code = 'TEB'
@@ -643,7 +643,7 @@ select product_id, '/img/products/EM0016_1.webp', '/img/products/EM0016_1-400.we
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Shampoo de romero y extracto de café', 'Estimula el crecimiento y aporta brillo. 450 g.', 'Los productos capilares de romero y café combinan potentes ingredientes naturales para estimular el crecimiento, fortalecer la raíz y aportar brillo intenso al cabello', 35000, 10, 450,
+  select a.id, c.id, 'Shampoo de romero y extracto de café', 'Fortalece la raíz y aporta brillo. 450 ml.', 'Fórmula capilar que combina romero y extracto de café. La descripción del productor destaca su uso para fortalecer la raíz y aportar brillo al cabello.', 35000, 10, 450,
          '{}'::text[], '{"art":"tea","colors":["#EEF2EC","#5E6B62"],"label":"Shampoo"}'::jsonb, false, false, 'EM0015_1', '{"format":"Botella","weight_g":450,"height_cm":21.37,"width_cm":7.84,"depth_cm":7.84}'::jsonb,
          'aprobado', now(), now() - make_interval(mins => 959)
   from public.ambassadors a, public.categories c where a.code = 'EM0015' and c.code = 'CUI'
@@ -657,7 +657,7 @@ select product_id, '/img/products/EM0015_1.webp', '/img/products/EM0015_1-400.we
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Acondicionador de coco', 'Brillo y suavidad sin siliconas pesadas. 450 g.', 'Prevención de la pérdida de proteína: El aceite de coco es rico en ácido láurico. Este componente tiene una alta afinidad con la proteína del cabello, protegiéndolo desde el interior durante el lavado.Brillo y suavidad natural: Aporta un aspecto saludable y sedoso sin necesidad de usar siliconas pesadas.Desenredado fácil: Suaviza los nudos al instante. Esto reduce notablemente el quiebre del cabello al peinarlo.', 35000, 10, 450,
+  select a.id, c.id, 'Acondicionador de coco', 'Suavidad y desenredo fácil. 450 ml.', 'Acondicionador con aceite de coco, rico en ácido láurico. Su fórmula ayuda a proteger la fibra capilar durante el lavado, aportar suavidad y facilitar el desenredo.', 35000, 10, 450,
          '{}'::text[], '{"art":"tea","colors":["#EEF2EC","#5E6B62"],"label":"Acondicionador"}'::jsonb, false, false, 'EM0015_2', '{"format":"Botella","weight_g":450,"height_cm":18.7,"width_cm":7.84,"depth_cm":6}'::jsonb,
          'aprobado', now(), now() - make_interval(mins => 958)
   from public.ambassadors a, public.categories c where a.code = 'EM0015' and c.code = 'CUI'
@@ -671,7 +671,7 @@ select product_id, '/img/products/EM0015_2.webp', '/img/products/EM0015_2-400.we
 with p as (
   insert into public.products (ambassador_id, category_id, name, short_description, description, price, stock, weight_grams,
                                badges, mockup, is_featured, is_age_restricted, supplier_code, package, status, approved_at, created_at)
-  select a.id, c.id, 'Cóctel capilar de frutas y aceites vegetales', 'Nutrición profunda para el cabello. 300 g.', 'Un cóctel de frutas y aceites vegetales capilares es una de las "bombas" de nutrición más completas para el cabello. Esta combinación fusiona las vitaminas y antioxidantes de las frutas con los ácidos grasos esenciales de los aceites para reparar a profundidad', 35000, 10, 300,
+  select a.id, c.id, 'Cóctel capilar de frutas y aceites vegetales', 'Nutrición para el cabello. 300 ml.', 'Mezcla capilar de frutas y aceites vegetales que reúne vitaminas, antioxidantes y ácidos grasos esenciales. Diseñada como tratamiento cosmético para nutrir y cuidar el cabello.', 35000, 10, 300,
          '{}'::text[], '{"art":"tea","colors":["#EEF2EC","#5E6B62"],"label":"Cóctel capilar"}'::jsonb, false, false, 'EM0015_3', '{"format":"Botella","weight_g":300,"height_cm":14.5,"width_cm":6,"depth_cm":4.5}'::jsonb,
          'aprobado', now(), now() - make_interval(mins => 957)
   from public.ambassadors a, public.categories c where a.code = 'EM0015' and c.code = 'CUI'

@@ -2,7 +2,7 @@
 /**
  * Genera la semilla del catálogo a partir de la hoja "EMBAJADORES ACEPTADOS - PRODUCTOS".
  *
- *   node scripts/build-product-seed.mjs [ruta.csv]
+ *   node scripts/build-product-seed.mjs [ruta.csv] [--textos]
  *
  * Entrada (fuera de git):  private/productos.csv   (incluye números de identificación)
  * Salida:                  supabase/seed/03_products_kits.sql   (sin datos personales)
@@ -14,13 +14,19 @@
  *   (las prepara scripts/fetch-product-photos.mjs). Si no, se muestra el empaque ilustrado.
  * · Las correcciones editoriales (nombres, tildes, mayúsculas) viven en GROUPS:
  *   la hoja se respeta en precios, stock, pesos y medidas.
+ * · Las descripciones de vitrina salen de scripts/catalog-texts.mjs (catálogo PDF).
+ *   Con --textos también escribe supabase/snippets/textos_catalogo.sql, que actualiza
+ *   nombre, descripción corta y descripción en una base ya poblada (sin tocar precios).
  */
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { TEXTS } from './catalog-texts.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const csvPath = process.argv[2] || path.join(root, 'private', 'productos.csv');
+const args = process.argv.slice(2);
+const wantTexts = args.includes('--textos');
+const csvPath = args.find((a) => !a.startsWith('--')) || path.join(root, 'private', 'productos.csv');
 const outPath = path.join(root, 'supabase', 'seed', '03_products_kits.sql');
 const photoDir = path.join(root, 'public', 'img', 'products');
 
@@ -197,6 +203,16 @@ const GROUPS = [
   { key: 'mva-coctel', cat: 'CUI', name: 'Cóctel capilar de frutas y aceites vegetales', short: 'Nutrición profunda para el cabello. 300 g.', mockup: M.care('Cóctel capilar'), v: [['EM0015_3']] },
 ];
 
+// Textos del catálogo PDF: reemplazan nombre/corta/descripción donde existan.
+for (const g of GROUPS) {
+  const t = TEXTS[g.key];
+  if (!t?.description) throw new Error(`${g.key}: falta su descripción en catalog-texts.mjs`);
+  if (t.name) g.name = t.name;
+  if (t.short) g.short = t.short;
+  g.description = t.description;
+}
+for (const key of Object.keys(TEXTS)) if (!GROUPS.some((g) => g.key === key)) throw new Error(`catalog-texts.mjs: ${key} no existe en GROUPS`);
+
 // Kits: solo con productos sin presentaciones (el kit lleva una unidad fija).
 // Precio PROVISIONAL ≈ 8% menos que por separado; el admin lo ajusta.
 const KITS = [
@@ -259,7 +275,7 @@ for (const g of GROUPS) {
   const stock = vrows.reduce((s, r) => s + r.stock, 0);
   const amb = first.amb;
   for (const r of vrows) if (r.amb !== amb) throw new Error(`${g.key}: mezcla embajadores`);
-  const desc = first.description;
+  const desc = g.description;
   // created_at escalonado: orden estable de "Lo más pedido" mientras no hay ventas.
   sql += `
 -- ${g.key} (${g.v.map((x) => x[0]).join(', ')})
@@ -310,6 +326,49 @@ join seed_products s on s.key = x.key;
 });
 
 fs.writeFileSync(outPath, sql);
+
+if (wantTexts) {
+  const textsPath = path.join(root, 'supabase', 'snippets', 'textos_catalogo.sql');
+  const values = GROUPS.map((g) => {
+    const codes = [...g.v.map((x) => x[0]), ...(g.photos || [])];
+    return `  (${q(g.key)}, ${arr(codes)}, ${q(g.name)}, ${q(g.short)}, ${q(g.description)})`;
+  }).join(',\n');
+  fs.writeFileSync(textsPath, `-- =====================================================================
+-- Textos del catálogo (Catalogo_Mercado_Origen.pdf) en una base ya poblada.
+-- GENERADO por: node scripts/build-product-seed.mjs --textos
+-- Actualiza nombre, descripción corta y descripción. No toca precios, stock,
+-- fotos ni slugs (el slug solo se fija al crear el producto).
+-- Ejecútalo en Supabase > SQL Editor. Corre en una transacción.
+-- =====================================================================
+begin;
+set local app.trusted = 'on';
+
+create temporary table new_texts (key text primary key, codes text[] not null, name text not null,
+                                  short_description text, description text not null) on commit drop;
+insert into new_texts (key, codes, name, short_description, description) values
+${values};
+
+-- Cada producto se ubica por su código del embajador (producto o presentación).
+create temporary table targets on commit drop as
+select distinct t.key, p.id as product_id
+  from new_texts t
+  join public.products p
+    on p.supplier_code = any(t.codes)
+    or p.id in (select v.product_id from public.product_variants v where v.attributes->>'supplier_code' = any(t.codes));
+
+update public.products p
+   set name = t.name, short_description = t.short_description, description = t.description
+  from targets x join new_texts t on t.key = x.key
+ where p.id = x.product_id
+   and (p.name, p.short_description, p.description) is distinct from (t.name, t.short_description, t.description);
+
+-- Revisión: textos que no encontraron su producto en la base
+select t.key, t.codes from new_texts t where not exists (select 1 from targets x where x.key = t.key) order by 1;
+
+commit;
+`);
+  console.log(`Escrito: ${path.relative(root, textsPath)}`);
+}
 const variants = GROUPS.reduce((s, g) => s + (g.v.length > 1 ? g.v.length : 0), 0);
 console.log(`${rows.size} filas → ${GROUPS.length} productos (${variants} presentaciones) · ${photos} fotos · ${KITS.length} kits`);
 console.log(`Escrito: ${path.relative(root, outPath)}`);

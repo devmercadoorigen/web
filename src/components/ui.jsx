@@ -155,6 +155,7 @@ const ICONS = {
   user: <><circle cx="12" cy="8" r="4" /><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6" /></>,
   bag: <><path d="M5 7h14l-1.2 11.2a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8z" /><path d="M9 7a3 3 0 0 1 6 0" /></>,
   close: <path d="M6 6l12 12M18 6 6 18" />,
+  menu: <path d="M4 7h16M4 12h16M4 17h16" />,
   arrow: <path d="M5 12h14M13 6l6 6-6 6" />,
   arrowUp: <path d="M7 17 17 7M9 7h8v8" />,
   leaf: <path d="M5 19c0-8 5-13 14-14-1 9-6 14-14 14zM5 19l7-7" />,
