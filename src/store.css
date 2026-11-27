@@ -373,3 +373,7 @@ a.fc-add { display: grid; place-items: center; text-decoration: none; }
 
 /* Fotos reales de producto: llenan su marco (tarjeta, carrito, hero) sin deformarse. */
 .art-img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+/* Logos de marca de los embajadores (public/img/ambassadors): se ven completos, sin recorte,
+   sobre fondo blanco. Las fotos que suben los embajadores siguen con object-fit: cover. */
+img[src^="/img/ambassadors/"] { object-fit: contain !important; background: #fff !important; padding: 6%; }
