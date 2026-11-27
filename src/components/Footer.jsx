@@ -20,8 +20,8 @@ export function Footer() {
             </span>
             <p>Plataforma para la promoción de la cultura, el agro y el emprendimiento del Huila. <b>Auténtico, cercano, orgulloso y de origen.</b></p>
             <div className="social">
-              <a href={contact.instagram || 'https://www.instagram.com/mercadoorigen.57/'} target="_blank" rel="noreferrer" aria-label="Instagram"><Icon name="instagram" size={20} /></a>
-              <a href={contact.facebook || 'https://www.facebook.com/'} target="_blank" rel="noreferrer" aria-label="Facebook"><Icon name="facebook" size={20} /></a>
+              <a href={contact.instagram || 'https://www.instagram.com/mercadoorigen.col/'} target="_blank" rel="noreferrer" aria-label="Instagram"><Icon name="instagram" size={20} /></a>
+              <a href={contact.facebook || 'https://www.facebook.com/profile.php?id=61594564100205'} target="_blank" rel="noreferrer" aria-label="Facebook"><Icon name="facebook" size={20} /></a>
               <a href={contact.tiktok || 'https://www.tiktok.com/@mercadoorigen'} target="_blank" rel="noreferrer" aria-label="TikTok"><Icon name="tiktok" size={20} /></a>
             </div>
           </div>

@@ -71,8 +71,8 @@ insert into public.site_settings (key, value) values
   ('contact', jsonb_build_object(
      'whatsapp', '+57 314 239 8821',
      'email', 'mercadoorigen.57@gmail.com',
-     'instagram', 'https://www.instagram.com/mercadoorigen.57/',
-     'facebook', 'https://www.facebook.com/',
+     'instagram', 'https://www.instagram.com/mercadoorigen.col/',
+     'facebook', 'https://www.facebook.com/profile.php?id=61594564100205',
      'tiktok', 'https://www.tiktok.com/@mercadoorigen')),
   ('announcements', jsonb_build_array(
      jsonb_build_object('icon', 'truck', 'text', 'Envío **gratis** desde $150.000'),
