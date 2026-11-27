@@ -16,7 +16,9 @@
     "secrets:push": "node scripts/supabase-env.mjs push",
     "auth:google": "node scripts/google-auth.mjs",
     "catalog:photos": "node scripts/fetch-product-photos.mjs",
-    "catalog:seed": "node scripts/build-product-seed.mjs"
+    "catalog:seed": "node scripts/build-product-seed.mjs",
+    "emails:build": "node scripts/auth-emails.mjs",
+    "emails:push": "node scripts/auth-emails.mjs push"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.119.2",

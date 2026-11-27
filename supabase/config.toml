@@ -244,7 +244,7 @@ otp_expiry = 3600
 # sender_name = "Admin"
 
 [auth.email.template.confirmation]
-subject = "Confirma tu correo · Mercado Origen"
+subject = "Confirma tu correo y empieza a comprar de origen 🌿"
 content_path = "./supabase/templates/confirmation.html"
 
 [auth.email.template.recovery]
@@ -256,23 +256,21 @@ subject = "Confirma tu nuevo correo · Mercado Origen"
 content_path = "./supabase/templates/email_change.html"
 
 [auth.email.template.invite]
-subject = "Te invitamos a Mercado Origen"
+subject = "¡Ya eres embajador de Mercado Origen! Activa tu cuenta"
 content_path = "./supabase/templates/invite.html"
 
 [auth.email.template.magic_link]
 subject = "Tu enlace para entrar · Mercado Origen"
 content_path = "./supabase/templates/magic_link.html"
 
-# Uncomment to customize email template
-# [auth.email.template.invite]
-# subject = "You have been invited"
-# content_path = "./supabase/templates/invite.html"
+[auth.email.template.reauthentication]
+subject = "Tu código de verificación · Mercado Origen"
+content_path = "./supabase/templates/reauthentication.html"
 
-# Uncomment to customize notification email template
-# [auth.email.notification.password_changed]
-# enabled = true
-# subject = "Your password has been changed"
-# content_path = "./templates/password_changed_notification.html"
+[auth.email.notification.password_changed]
+enabled = true
+subject = "Tu contraseña cambió · Mercado Origen"
+content_path = "./supabase/templates/password_changed_notification.html"
 
 [auth.sms]
 # Allow/disallow new user signups via SMS to your project.

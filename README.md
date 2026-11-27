@@ -112,9 +112,7 @@ Wompi sandbox: tarjeta aprobada `4242 4242 4242 4242`, rechazada `4111 1111 1111
    ```
 4. **Auth** (*Authentication → URL Configuration*): `Site URL` = tu dominio
    (p. ej. `https://mercado-origen.com`) y en *Redirect URLs* agrega `https://mercado-origen.com/**`.
-   Las plantillas de correo en español están en `supabase/templates/`; cópialas en
-   *Authentication → Email Templates*. Para que los correos de registro no queden limitados,
-   configura SMTP propio (Resend ofrece SMTP: `smtp.resend.com`).
+   Las plantillas y el SMTP de Resend se configuran con `npm run emails:push` (ver sección 6).
 5. **Primer admin en producción:** corre `npm run admin:create` desde tu computador con
    `SUPABASE_URL=https://<ref>.supabase.co` y la `service_role` del proyecto en la terminal
    (nunca la guardes en un archivo del repositorio).
@@ -176,10 +174,15 @@ En [comercios.wompi.co](https://comercios.wompi.co) → *Desarrolladores* hay do
 
 Los cambios importantes encolan un correo en `email_outbox` (una sola vez por evento):
 
-- pago aprobado → **pedido confirmado** (al cliente);
-- pedido **enviado** (con transportadora y guía), **entregado** (invita a calificar),
-  **cancelado** y **reembolsado** (al cliente);
-- producto **aprobado** o **rechazado** con el motivo (al embajador).
+- correo confirmado (o entrada con Google) → **bienvenida** (cliente o embajador, con el cupón de bienvenida si hay);
+- pago aprobado → **pago exitoso / pedido confirmado** (cliente), **¡vendiste!** (a cada embajador del pedido)
+  y **nuevo pedido** (al correo de contacto de /admin/contenido);
+- pago rechazado → **tu pago no se completó** (cliente, con el motivo y cómo reintentar);
+- pedido **preparando**, **enviado** (transportadora y guía), **entregado** (invita a calificar),
+  **cancelado** y **reembolsado** (cliente);
+- producto **aprobado** o **rechazado** con el motivo (embajador);
+- «Quiero ser embajador» → **solicitud recibida** (aspirante), **nueva solicitud** (admin) y,
+  si se rechaza, un aviso amable al aspirante. Al aprobarla, la invitación de Auth hace de bienvenida.
 
 `send-emails` los redacta en español y los envía con Resend. Sin `RESEND_API_KEY` quedan como
 `omitido` (no se reenvían después). Para que salgan solos, pg_cron despierta a la función cada
@@ -190,7 +193,16 @@ select vault.create_secret('https://<ref>.supabase.co/functions/v1', 'mo_functio
 select vault.create_secret('<el mismo valor de EMAIL_CRON_SECRET>', 'mo_cron_secret');
 ```
 
-En Resend verifica tu dominio y usa un remitente de ese dominio en `RESEND_FROM`.
+El diseño de todos los correos está en `supabase/functions/_shared/email-layout.js`.
+
+**Correos de Auth** (confirmar correo, recuperar contraseña, invitación de embajador, enlace mágico,
+cambio de correo, código y aviso de contraseña cambiada): `npm run emails:build` genera
+`supabase/templates/` y `npm run emails:push` los sube al proyecto junto con el SMTP de Resend
+(sin SMTP propio Supabase solo manda 2 correos por hora). Usa `SUPABASE_ACCESS_TOKEN` del `.env`
+y `RESEND_API_KEY` / `RESEND_FROM` de `supabase/functions/.env`.
+
+**Resend:** verifica el dominio (*Domains*, registros SPF y DKIM en tu DNS), crea una API key con
+permiso de envío y usa un remitente de ese dominio en `RESEND_FROM`.
 
 ## 7. Catálogo: importar productos de la hoja
 

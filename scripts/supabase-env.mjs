@@ -46,6 +46,10 @@ const env = {};
 for (const [k, v] of Object.entries(fns)) {
   if (v && !k.startsWith('VITE_') && !k.startsWith('WOMPI_')) env[k] = v;
 }
+// Resend también puede vivir en el .env raíz (allí tiene prioridad).
+for (const k of ['RESEND_API_KEY', 'RESEND_FROM', 'RESEND_REPLY_TO']) {
+  if (root[k]) env[k] = root[k];
+}
 // En la nube la tienda vive en el dominio real: nunca se sube una URL de localhost.
 if (mode === 'push') {
   const SITE = 'https://mercado-origen.com';
