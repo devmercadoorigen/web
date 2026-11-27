@@ -7,8 +7,8 @@ import { Icon } from '../../components/ui.jsx';
 import { LABELS, PATHS } from '../territory/Territory.jsx';
 import { DailySalesChart, HuilaHeatmap, RankBars } from './kit.jsx';
 
-const ACTION = { insert: 'creó', update: 'editó', delete: 'eliminó', sku_changed: 'cambió el SKU de', ambassador_invited: 'invitó a', ambassador_linked: 'vinculó una cuenta a', user_deactivated: 'desactivó', user_activated: 'reactivó' };
-const ENTITY = { products: 'un producto', ambassadors: 'un embajador', ambassador_private: 'datos privados de un embajador', orders: 'un pedido', coupons: 'un cupón', kits: 'un kit', kit_items: 'un kit', categories: 'una categoría', faqs: 'una pregunta frecuente', site_settings: 'textos del sitio', profiles: 'un usuario', reviews: 'una reseña', ambassador_payouts: 'una liquidación', ambassador_badges: 'una insignia', ambassador_applications: 'una solicitud', order_items: 'un item de pedido', subregions: 'una zona', municipalities: 'un municipio', shipping_settings: 'el envío' };
+const ACTION = { insert: 'creó', update: 'editó', delete: 'eliminó', sku_changed: 'cambió el SKU de', ambassador_invited: 'invitó a', ambassador_linked: 'vinculó una cuenta a', user_deactivated: 'desactivó', user_activated: 'reactivó', payments_mode_changed: 'cambió el modo de' };
+const ENTITY = { products: 'un producto', ambassadors: 'un embajador', ambassador_private: 'datos privados de un embajador', orders: 'un pedido', coupons: 'un cupón', kits: 'un kit', kit_items: 'un kit', categories: 'una categoría', faqs: 'una pregunta frecuente', site_settings: 'textos del sitio', payments_mode: 'pagos (prueba / producción)', profiles: 'un usuario', reviews: 'una reseña', ambassador_payouts: 'una liquidación', ambassador_badges: 'una insignia', ambassador_applications: 'una solicitud', order_items: 'un item de pedido', subregions: 'una zona', municipalities: 'un municipio', shipping_settings: 'el envío' };
 
 function Kpi({ icon, label, value, hint, tone, to }) {
   const C = to ? Link : 'div';

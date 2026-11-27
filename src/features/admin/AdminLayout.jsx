@@ -14,6 +14,7 @@ const NAV = [
     ['/admin/aprobaciones', 'Aprobaciones', 'check', false, 'pending'],
     ['/admin/pedidos', 'Pedidos', 'box'],
     ['/admin/liquidaciones', 'Liquidaciones', 'card'],
+    ['/admin/pagos', 'Pagos (Wompi)', 'lock'],
   ]],
   ['Catálogo', [
     ['/admin/productos', 'Productos', 'bag'],
@@ -57,6 +58,16 @@ export default function AdminLayout() {
     },
   });
 
+  // Modo de pagos (site_settings es de lectura pública; solo se muestra el aviso).
+  const payMode = useQuery({
+    queryKey: ['admin', 'payments-mode'],
+    refetchInterval: 60_000,
+    queryFn: async () => {
+      const { data } = await supabase.from('site_settings').select('value').eq('key', 'payments').maybeSingle();
+      return data?.value?.wompi_mode === 'production' ? 'production' : 'sandbox';
+    },
+  });
+
   return (
     <div className={`adm${collapsed ? ' is-collapsed' : ''}${drawer ? ' drawer-open' : ''}`}>
       <a className="skip" href="#adm-main">Ir al contenido</a>
@@ -66,6 +77,9 @@ export default function AdminLayout() {
         </button>
         <Link to="/" className="pn-logo" aria-label="Mercado Origen, ir a la tienda"><img src="/brand/logo-vertical.svg" alt="" width="42" height="48" /></Link>
         <div className="pn-who"><span className="kicker">Administración</span><b>Mercado Origen</b></div>
+        {payMode.data === 'sandbox' && (
+          <Link to="/admin/pagos" className="pill pill-ocre adm-paymode" title="Los pagos no cobran dinero real">Pagos en modo prueba</Link>
+        )}
         <Link to="/" className="pn-store"><Icon name="bag" size={18} /><span>Ver la tienda</span></Link>
         <UserMenu />
       </header>

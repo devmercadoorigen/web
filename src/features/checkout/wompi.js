@@ -26,7 +26,9 @@ export function loadWompi() {
  */
 export async function openWompi(cfg, customer, onResult) {
   await loadWompi();
-  const publicKey = cfg.publicKey || import.meta.env.VITE_WOMPI_PUBLIC_KEY;
+  // La llave pública la manda el servidor según el modo activo (prueba / producción),
+  // así siempre coincide con la firma de integridad.
+  const publicKey = cfg.publicKey;
   if (!publicKey) throw new Error('Los pagos todavía no están configurados. Escríbenos por WhatsApp para completar tu compra.');
   const digits = (v) => (v || '').replace(/\D/g, '').slice(-10);
   const a = customer.address || {};

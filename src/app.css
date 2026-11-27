@@ -239,3 +239,11 @@ h2.panel-title { font-size: 24px; }
 .chips button.on { background: var(--verde); color: #fff; }
 .chips em { font-style: normal; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 99px; background: rgba(255, 255, 255, 0.85); color: var(--ink); font-size: 12px; display: grid; place-items: center; }
 .chips button:not(.on) em { background: #fff; }
+
+/* Autorización de datos para cuentas creadas con Google (ConsentGate) */
+.consent-gate { border: 0; border-radius: var(--r-xl, 24px); padding: 0; width: min(520px, calc(100% - 32px)); background: #fff; box-shadow: var(--sh-3); }
+.consent-gate::backdrop { background: rgba(8, 26, 16, 0.55); backdrop-filter: blur(3px); }
+.consent-body { display: grid; gap: 16px; padding: clamp(20px, 4vw, 30px); }
+.consent-body h2 { font-size: 24px; }
+.consent-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; }
+@media (max-width: 480px) { .consent-actions .btn { flex: 1 1 100%; } }

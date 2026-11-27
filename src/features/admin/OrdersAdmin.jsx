@@ -143,7 +143,7 @@ export function OrderAdminDetail() {
         .select(`*, items:order_items (id, sku, name, unit_price, quantity, line_total, kit_id, item_status, ready_at, received_at,
                    ambassador:ambassadors (id, brand_name, municipality:municipalities (name))),
                  history:order_status_history (status, note, created_at, changed_by),
-                 payments (reference, wompi_transaction_id, status, status_message, payment_method_type, amount_in_cents, created_at),
+                 payments (reference, wompi_transaction_id, status, status_message, payment_method_type, amount_in_cents, environment, created_at),
                  user:profiles (full_name, email)`)
         .eq('order_number', numero)
         .maybeSingle();
@@ -322,7 +322,7 @@ export function OrderAdminDetail() {
             <ul className="pay-list">
               {[...o.payments].sort((a, b) => b.created_at.localeCompare(a.created_at)).map((p) => (
                 <li key={p.reference}>
-                  <div><span className={`pill pill-${PAY_TONE[p.status]}`}>{p.status}</span> {p.payment_method_type && <b>{p.payment_method_type}</b>}</div>
+                  <div><span className={`pill pill-${PAY_TONE[p.status]}`}>{p.status}</span> {p.environment === 'sandbox' && <span className="pill pill-ocre" title="Pago simulado en Wompi sandbox: no hubo dinero real">Prueba</span>} {p.payment_method_type && <b>{p.payment_method_type}</b>}</div>
                   <span className="sku">{p.reference}</span>
                   {p.wompi_transaction_id && <span className="muted small">Transacción {p.wompi_transaction_id}</span>}
                   {p.status_message && <span className="muted small">{p.status_message}</span>}

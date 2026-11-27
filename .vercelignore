@@ -1,0 +1,6 @@
+# Nunca subir secretos con `vercel deploy` desde la CLI
+.env
+.env.*
+!.env.example
+supabase/functions/.env
+private/

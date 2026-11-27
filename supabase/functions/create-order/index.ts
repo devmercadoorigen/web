@@ -5,7 +5,7 @@
 //   { action: 'retry', order_number, access_token } -> nuevo intento de pago del mismo pedido
 // Al navegador solo vuelven: llave pública, referencia, monto, firma y vencimiento.
 import { admin, cors, fail, json, sessionUser, siteUrl } from '../_shared/http.ts';
-import { integritySignature } from '../_shared/wompi.ts';
+import { getMode, integritySignature, keyProblems, wompiKeys } from '../_shared/wompi.ts';
 
 const CHECKOUT_MINUTES = 60; // el checkout de Wompi vence en 1 hora
 
@@ -13,12 +13,15 @@ Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: cors(req) });
   if (req.method !== 'POST') return fail(req, 'Método no permitido', 405);
 
-  const integrity = Deno.env.get('WOMPI_INTEGRITY_SECRET');
-  const publicKey = Deno.env.get('WOMPI_PUBLIC_KEY') ?? '';
-  if (!integrity) {
-    console.error('Falta WOMPI_INTEGRITY_SECRET');
+  const sb = admin();
+  // Modo activo (prueba / producción) elegido en /admin/pagos.
+  const mode = await getMode(sb);
+  const problems = keyProblems(mode).filter((p) => p.name.endsWith('PUBLIC_KEY') || p.name.endsWith('INTEGRITY_SECRET'));
+  if (problems.length) {
+    console.error(`Wompi ${mode} sin configurar:`, problems);
     return fail(req, 'Los pagos no están disponibles en este momento. Escríbenos por WhatsApp.', 503);
   }
+  const { publicKey, integrity } = wompiKeys(mode);
 
   let body: Record<string, unknown>;
   try {
@@ -28,7 +31,6 @@ Deno.serve(async (req) => {
   }
   if (JSON.stringify(body).length > 20_000) return fail(req, 'Solicitud demasiado grande.', 413);
 
-  const sb = admin();
   const user = await sessionUser(req, sb);
 
   let order: Record<string, unknown>;
@@ -57,6 +59,10 @@ Deno.serve(async (req) => {
     if (sid) await sb.from('orders').update({ session_id: sid }).eq('id', order.order_id);
   }
 
+  // Este intento de pago queda ligado al ambiente con el que se firmó.
+  const { error: envErr } = await sb.from('payments').update({ environment: mode }).eq('reference', String(order.reference));
+  if (envErr) console.error('payments.environment', envErr);
+
   const amount = Number(order.amount_in_cents);
   const expiration = new Date(Date.now() + CHECKOUT_MINUTES * 60_000).toISOString();
   const signature = await integritySignature(String(order.reference), amount, 'COP', expiration, integrity);
@@ -70,6 +76,7 @@ Deno.serve(async (req) => {
       ? { email: order.email, full_name: order.customer_name, phone: order.customer_phone, address: order.shipping_address }
       : undefined,
     wompi: {
+      mode,
       publicKey,
       currency: 'COP',
       amountInCents: amount,

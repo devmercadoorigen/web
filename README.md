@@ -8,8 +8,8 @@ embajadores de los 37 municipios. Un carrito, un pago (Wompi) y un solo envío.
 - **Pagos:** Wompi (sandbox y producción). **Correos:** Resend. **Hosting:** Vercel.
 
 > Regla de oro: la llave `service_role` de Supabase y los secretos de Wompi **nunca** van al
-> frontend. En el navegador solo viven `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` y
-> `VITE_WOMPI_PUBLIC_KEY`. Todo lo demás son secretos de Supabase.
+> frontend. En el navegador solo viven `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY`
+> (la llave pública de Wompi la entrega el servidor). Todo lo demás son secretos de Supabase.
 
 ---
 
@@ -111,7 +111,7 @@ Wompi sandbox: tarjeta aprobada `4242 4242 4242 4242`, rechazada `4111 1111 1111
    psql "<cadena de conexión>" -f supabase/seed/private/90_private.sql
    ```
 4. **Auth** (*Authentication → URL Configuration*): `Site URL` = tu dominio
-   (p. ej. `https://mercadoorigen.co`) y en *Redirect URLs* agrega `https://mercadoorigen.co/**`.
+   (p. ej. `https://mercado-origen.com`) y en *Redirect URLs* agrega `https://mercado-origen.com/**`.
    Las plantillas de correo en español están en `supabase/templates/`; cópialas en
    *Authentication → Email Templates*. Para que los correos de registro no queden limitados,
    configura SMTP propio (Resend ofrece SMTP: `smtp.resend.com`).
@@ -131,34 +131,42 @@ Wompi sandbox: tarjeta aprobada `4242 4242 4242 4242`, rechazada `4111 1111 1111
 
 Despliegue:
 ```bash
-supabase secrets set --env-file supabase/functions/.env   # con los valores de producción
+supabase secrets set --env-file supabase/functions/.env   # con las llaves de prueba y de producción
 supabase functions deploy create-order
 supabase functions deploy payment-status
 supabase functions deploy wompi-webhook
 supabase functions deploy admin-users
+supabase functions deploy payments-config
 supabase functions deploy send-emails
 ```
 
-Secretos (ver `supabase/functions/.env.example`): `WOMPI_ENV`, `WOMPI_PUBLIC_KEY`,
-`WOMPI_PRIVATE_KEY`, `WOMPI_INTEGRITY_SECRET`, `WOMPI_EVENTS_SECRET`, `SITE_URL`,
-`ALLOWED_ORIGINS`, `RESEND_API_KEY`, `RESEND_FROM`, `EMAIL_CRON_SECRET`.
+Secretos (ver `supabase/functions/.env.example`): `WOMPI_TEST_*` y `WOMPI_PROD_*` (4 cada uno),
+`SITE_URL`, `ALLOWED_ORIGINS`, `RESEND_API_KEY`, `RESEND_FROM`, `EMAIL_CRON_SECRET`.
 
 ## 5. Wompi
 
-En [comercios.wompi.co](https://comercios.wompi.co) → *Desarrolladores*:
+En [comercios.wompi.co](https://comercios.wompi.co) → *Desarrolladores* hay dos juegos de llaves
+(interruptor *Modo pruebas* / *Modo producción*). **Los dos** van en `supabase/functions/.env`:
 
-| | Sandbox | Producción |
+| | Prueba (sandbox) | Producción |
 |---|---|---|
-| `WOMPI_ENV` | `sandbox` | `production` |
-| Llave pública (`VITE_WOMPI_PUBLIC_KEY` y `WOMPI_PUBLIC_KEY`) | `pub_test_…` | `pub_prod_…` |
-| Llave privada (`WOMPI_PRIVATE_KEY`) | `prv_test_…` | `prv_prod_…` |
-| Integridad (`WOMPI_INTEGRITY_SECRET`) | `test_integrity_…` | `prod_integrity_…` |
-| Eventos (`WOMPI_EVENTS_SECRET`) | `test_events_…` | `prod_events_…` |
+| Llave pública | `WOMPI_TEST_PUBLIC_KEY=pub_test_…` | `WOMPI_PROD_PUBLIC_KEY=pub_prod_…` |
+| Llave privada | `WOMPI_TEST_PRIVATE_KEY=prv_test_…` | `WOMPI_PROD_PRIVATE_KEY=prv_prod_…` |
+| Integridad | `WOMPI_TEST_INTEGRITY_SECRET=test_integrity_…` | `WOMPI_PROD_INTEGRITY_SECRET=prod_integrity_…` |
+| Eventos | `WOMPI_TEST_EVENTS_SECRET=test_events_…` | `WOMPI_PROD_EVENTS_SECRET=prod_events_…` |
 
-- **URL de eventos (webhook)**, en *Desarrolladores → URL de eventos*:
+- **Cambiar de modo:** en el admin, *Operación → Pagos (Wompi)* (`/admin/pagos`). El modo se
+  guarda en `site_settings` (`payments.wompi_mode`) y aplica de inmediato; no hay que redesplegar.
+  No deja activar un modo con llaves faltantes o de otro ambiente, pide confirmación escrita y
+  queda en *Actividad*. Mientras esté en prueba, el admin muestra el aviso "Pagos en modo prueba".
+- Cada intento de pago guarda su ambiente (`payments.environment`): la consulta a Wompi y el
+  webhook usan siempre las llaves de ese ambiente, y un evento de prueba nunca toca un pago de
+  producción. Los pagos de prueba salen marcados como **Prueba** en el detalle del pedido.
+- El navegador no lleva llaves: `create-order` entrega la llave pública del modo activo.
+- **URL de eventos (webhook)**, en *Desarrolladores → URL de eventos*, en **ambos** modos:
   `https://<ref>.supabase.co/functions/v1/wompi-webhook`
 - **URL de redirección** (la arma el servidor): `<SITE_URL>/pago/resultado`.
-- Antes de salir a producción, haz un pago real en sandbox y confirma en los logs de
+- Antes de salir a producción, haz un pago completo en modo prueba y confirma en los logs de
   `wompi-webhook` que el checksum del evento se valida (el ejemplo de la documentación de
   Wompi es ilustrativo y no sirve para probar).
 - El monto, el stock y los descuentos **siempre** los calcula la base (`checkout_build`); lo que
@@ -212,7 +220,7 @@ Imágenes fijas del sitio (hero, territorio): `node scripts/optimize-site-images
 
 1. Importa el repositorio en Vercel (framework: **Vite**; build `npm run build`; salida `dist`).
 2. Variables de entorno (Production y Preview):
-   `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `VITE_WOMPI_PUBLIC_KEY`, `VITE_WHATSAPP`,
+   `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `VITE_WHATSAPP`,
    `VITE_AUTH_GOOGLE` (`false` hasta activar Google en Supabase).
 3. `vercel.json` ya incluye:
    - rutas de la app (todas van a `index.html`);

@@ -108,6 +108,7 @@ export const router = createBrowserRouter([
           { path: 'embajadores/:id', lazy: page(() => import('../features/admin/AmbassadorsAdmin.jsx'), 'AmbassadorAdmin') },
           { path: 'solicitudes', lazy: page(() => import('../features/admin/AmbassadorsAdmin.jsx'), 'ApplicationsPage') },
           { path: 'liquidaciones', lazy: page(() => import('../features/admin/PayoutsAdmin.jsx')) },
+          { path: 'pagos', lazy: page(() => import('../features/admin/PaymentsAdmin.jsx')) },
           { path: 'kits', lazy: page(() => import('../features/admin/KitsAdmin.jsx'), 'KitsList') },
           { path: 'kits/nuevo', lazy: page(() => import('../features/admin/KitsAdmin.jsx'), 'KitEditor') },
           { path: 'kits/:id', lazy: page(() => import('../features/admin/KitsAdmin.jsx'), 'KitEditor') },
