@@ -275,6 +275,7 @@ export function WelcomeWheel() {
               {view && <Confetti />}
             </div>
 
+            <div className="ww-side">
             {err && <p className="ww-err" role="alert">{err}</p>}
 
             {view ? <Prize won={view} onClose={() => setOpen(false)} /> : (
@@ -290,6 +291,7 @@ export function WelcomeWheel() {
                 <button type="button" className="ww-link ww-later" onClick={close} disabled={phase !== 'idle'}>Jugar después</button>
               </>
             )}
+            </div>
           </div>
         )}
       </dialog>

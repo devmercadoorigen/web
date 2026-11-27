@@ -13,6 +13,27 @@
 @keyframes ww-pop { from { opacity: 0; transform: translateY(24px) scale(0.94); } }
 
 .ww-in { position: relative; padding: 30px 26px 24px; display: grid; gap: 18px; justify-items: center; text-align: center; }
+.ww-side { width: 100%; display: grid; gap: 18px; justify-items: center; }
+@media (max-width: 480px) { .ww .ww-kicker { font-size: 11px; letter-spacing: 0.08em; margin-right: 30px; } }
+
+/* PC: ruleta a la izquierda y texto a la derecha, todo dentro de la altura de la pantalla. */
+@media (min-width: 900px) {
+  .ww { width: min(980px, calc(100% - 48px)); }
+  .ww-in {
+    grid-template-columns: auto minmax(0, 1fr); grid-template-rows: 1fr auto auto 1fr;
+    grid-template-areas: "stage ." "stage head" "stage side" "stage .";
+    column-gap: clamp(28px, 4vw, 52px); row-gap: 18px; padding: 36px 44px; text-align: left; justify-items: stretch;
+  }
+  .ww-head { grid-area: head; }
+  .ww-side { grid-area: side; justify-items: start; gap: 14px; }
+  .ww-stage { grid-area: stage; align-self: center; width: min(440px, 44vw, calc(100dvh - 120px)); min-width: 280px; }
+  .ww .ww-kicker { justify-self: start; }
+  .ww .ww-head h2 { font-size: clamp(34px, 3.6vw, 46px); }
+  .ww .ww-head p { max-width: 38ch; }
+  .ww .ww-details summary { text-align: left; }
+  .ww .ww-later { padding-left: 0; }
+  .ww .ww-prize { margin-top: 30px; }
+}
 .ww-in::before { /* destellos */
   content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0.55;
   background-image: radial-gradient(2px 2px at 12% 18%, #FFE07A, transparent), radial-gradient(1.5px 1.5px at 84% 12%, #fff, transparent),
