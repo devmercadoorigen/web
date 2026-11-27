@@ -6,6 +6,7 @@
 // Al navegador solo vuelven: llave pública, referencia, monto, firma y vencimiento.
 import { admin, cors, fail, json, sessionUser, siteUrl } from '../_shared/http.ts';
 import { getMode, integritySignature, keyProblems, wompiKeys } from '../_shared/wompi.ts';
+import { withShipping } from '../_shared/shipping.ts';
 
 const CHECKOUT_MINUTES = 60; // el checkout de Wompi vence en 1 hora
 
@@ -43,7 +44,14 @@ Deno.serve(async (req) => {
     order = data;
   } else {
     // El usuario sale del JWT verificado, nunca del cuerpo de la solicitud.
-    const { action: _a, user_id: _u, ...payload } = body;
+    const { action: _a, user_id: _u, ...raw } = body;
+    // Envío: misma cotización (Hoko o tarifa) que vio el cliente en el resumen; queda en shipping_quote_id.
+    let payload: Record<string, unknown> = raw;
+    try {
+      payload = (await withShipping(sb, raw, user?.id ?? null)).payload;
+    } catch (e) {
+      console.error('withShipping', e); // checkout_create rechaza el pedido si el envío quedó sin calcular
+    }
     const { data, error } = await sb.rpc('checkout_create', { p: payload, p_user_id: user?.id ?? null });
     if (error) {
       const known = ['P0001', 'P0002', '22023'].includes(error.code ?? '');

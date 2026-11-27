@@ -270,6 +270,8 @@ ${button(`${siteUrl()}/panel`, 'Ir a mi panel')}`,
   }
   const { data: wc } = await ctx.sb.from('site_settings').select('value').eq('key', 'welcome_coupon').maybeSingle();
   const coupon = (wc?.value as { code?: string } | null)?.code;
+  const { data: wh } = await ctx.sb.from('site_settings').select('value').eq('key', 'wheel').maybeSingle();
+  const wheelOn = !!(wh?.value as { enabled?: boolean } | null)?.enabled;
   return {
     subject: `¡Bienvenido a Mercado Origen${first(pr.full_name) ? `, ${first(pr.full_name)}` : ''}! 🌿`,
     html: frame(ctx, {
@@ -285,8 +287,35 @@ ${features([
   ['🌱', 'De origen', 'Directo del embajador, sin intermediarios.'],
 ])}
 ${coupon ? `${h2('Un regalo de bienvenida')}${p('Usa este cupón en tu primera compra:')}${code(coupon, 'Tu cupón')}` : ''}
-${button(`${siteUrl()}/tienda`, 'Explorar la tienda')}
+${wheelOn ? callout('🎡 <b>Te espera la ruleta de bienvenida.</b> Entra con tu cuenta y gira: envío gratis, descuentos de hasta 20%, 2x1 y más para tu primera compra.') : ''}
+${button(`${siteUrl()}/tienda`, wheelOn ? 'Girar la ruleta' : 'Explorar la tienda')}
 <p style="margin:10px 0 0;text-align:center;font-size:14px"><a href="${esc(siteUrl())}/kits" style="color:#0B7A3B;font-weight:800">O mira los kits para regalar →</a></p>`,
+    }),
+  };
+}
+
+/** Premio de la ruleta de bienvenida (al girar). */
+async function wheelPrize(ctx: Ctx, userId: string): Promise<Mail> {
+  const { data: s } = await ctx.sb.from('wheel_spins')
+    .select('prize:wheel_prizes (slug, legend, terms, min_order), coupon:coupons (code, expires_at), profile:profiles (full_name)')
+    .eq('user_id', userId).maybeSingle();
+  const prize = (s as { prize?: { legend: string; terms: string | null; min_order: number } } | null)?.prize;
+  const coupon = (s as { coupon?: { code: string; expires_at: string | null } } | null)?.coupon;
+  if (!prize || !coupon) return null;
+  const name = (s as { profile?: { full_name?: string } }).profile?.full_name;
+  const until = coupon.expires_at ? longDate(coupon.expires_at) : null;
+  return {
+    subject: `🎉 ¡Ganaste ${prize.legend.toLowerCase()} en Mercado Origen!`,
+    html: frame(ctx, {
+      title: 'Tu premio de la ruleta',
+      preheader: `Tu premio se aplica solo en tu primera compra${until ? `. Vence el ${until}` : ''}.`,
+      kicker: '🎡 Ruleta de bienvenida', tone: 'yellow',
+      heading: `¡Ganaste${hi(name)}!`,
+      intro: `Tu premio: <b>${esc(prize.legend)}</b>.`,
+      body: `${prize.terms ? p(esc(prize.terms)) : ''}
+${code(coupon.code, 'Tu código')}
+${callout(`✨ <b>No tienes que hacer nada:</b> al pagar tu primera compra con esta cuenta, el premio se aplica solo${prize.min_order > 0 ? ` (en compras desde ${money(prize.min_order)})` : ''}.${until ? ` Vence el <b>${esc(until)}</b>.` : ''}`, 'soft')}
+${button(`${siteUrl()}/tienda`, 'Usar mi premio')}`,
     }),
   };
 }
@@ -398,6 +427,7 @@ export async function render(sb: SupabaseClient, row: OutboxRow, contact?: Conta
   const ctx: Ctx = { sb, contact: contact ?? await loadContact(sb) };
   switch (row.kind) {
     case 'bienvenida': return welcome(ctx, row.ref_id);
+    case 'premio_ruleta': return wheelPrize(ctx, row.ref_id);
     case 'producto_revisado': return productReviewed(ctx, row.ref_id, row.payload);
     case 'solicitud_recibida': case 'solicitud_admin': case 'solicitud_rechazada': return application(ctx, row.kind, row.ref_id);
   }

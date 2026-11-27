@@ -1,11 +1,28 @@
 import { supabase } from '../../lib/supabase.js';
 import { getSessionId } from '../recommendations/track.js';
 
-/** Resumen calculado en el servidor (precios, kits, stock, cupón y envío). */
+/**
+ * Resumen calculado en el servidor (precios, kits, stock, cupón y envío).
+ * Pasa por la Edge Function shipping-quote, que cotiza el envío con Hoko;
+ * si la función no responde, cae a la RPC (envío con las tarifas propias).
+ */
 export async function quoteCheckout(payload) {
-  const { data, error } = await supabase.rpc('checkout_quote', { p: payload });
-  if (error) throw error;
-  return data;
+  const { data, error } = await supabase.functions.invoke('shipping-quote', { body: { action: 'quote', ...payload } });
+  if (!error) return data;
+  let message = null;
+  try { message = (await error.context.json())?.error; } catch { /* sin cuerpo */ }
+  if (message && error.context?.status === 422) throw new Error(message);
+  const rpc = await supabase.rpc('checkout_quote', { p: payload });
+  if (rpc.error) throw rpc.error;
+  return rpc.data;
+}
+
+/** Ciudades de Hoko de un departamento (sugerencias del campo Ciudad). */
+export async function cityOptions(department) {
+  if (!department) return [];
+  const { data, error } = await supabase.rpc('hoko_city_options', { p_department: department });
+  if (error) return [];
+  return data || [];
 }
 
 async function invoke(name, body) {

@@ -7,6 +7,7 @@ import { useToast } from '../../components/Toast.jsx';
 import { Icon } from '../../components/ui.jsx';
 import { useAuth } from '../auth/AuthProvider.jsx';
 import { Field, FormNotice } from '../auth/AuthShell.jsx';
+import { cityOptions } from '../checkout/api.js';
 
 export const DEPARTMENTS = [
   'Amazonas', 'Antioquia', 'Arauca', 'Atlántico', 'Bogotá D.C.', 'Bolívar', 'Boyacá', 'Caldas', 'Caquetá', 'Casanare', 'Cauca',
@@ -32,6 +33,8 @@ export function validateAddress(a) {
 export function AddressFields({ value: a, onChange, errors = {}, withLabel = true }) {
   const set = (k) => (e) => onChange({ ...a, [k]: e.target.value });
   const err = (k) => ({ 'aria-invalid': !!errors[k] || undefined, 'aria-describedby': errors[k] ? `ad-${k}-err` : undefined });
+  // Ciudades de Hoko del departamento: así la ciudad se escribe como la conoce la transportadora.
+  const cities = useQuery({ queryKey: ['hoko-cities', a.department], enabled: !!a.department, staleTime: 3_600_000, queryFn: () => cityOptions(a.department) });
   return (
     <>
       <div className="form-2">
@@ -53,7 +56,8 @@ export function AddressFields({ value: a, onChange, errors = {}, withLabel = tru
           </select>
         </Field>
         <Field id="ad-city" label="Ciudad o municipio" error={errors.city}>
-          <input id="ad-city" autoComplete="address-level2" value={a.city} onChange={set('city')} {...err('city')} />
+          <input id="ad-city" autoComplete="address-level2" list="ad-city-list" value={a.city} onChange={set('city')} {...err('city')} />
+          <datalist id="ad-city-list">{(cities.data || []).map((c) => <option key={c} value={c} />)}</datalist>
         </Field>
         <Field id="ad-address_line" label="Dirección" hint="Calle, número, barrio, apto." error={errors.address_line}>
           <input id="ad-address_line" autoComplete="street-address" value={a.address_line} onChange={set('address_line')} {...err('address_line')} />

@@ -243,7 +243,12 @@ function SiteTexts() {
   useEffect(() => {
     if (!q.data) return;
     setSt({ hero: q.data.settings.hero || {}, announcements: q.data.settings.announcements || [], contact: q.data.settings.contact || {}, welcome_coupon: q.data.settings.welcome_coupon || { code: null } });
-    setShip({ free_shipping_threshold: q.data.shipping?.free_shipping_threshold ?? 150000, flat_rate: q.data.shipping?.flat_rate ?? '', rates: Object.entries(q.data.shipping?.base_rates || {}) });
+    const sh = q.data.shipping || {};
+    setShip({
+      free_shipping_threshold: sh.free_shipping_threshold ?? 150000, flat_rate: sh.flat_rate ?? '', rates: Object.entries(sh.base_rates || {}),
+      provider: sh.provider || 'tarifas', hoko_stock_id: sh.hoko_stock_id ?? '', hoko_extra: sh.hoko_extra ?? 0,
+      box_weight_g: sh.box_weight_g ?? 300, default_item_weight_g: sh.default_item_weight_g ?? 500,
+    });
   }, [q.data]);
   if (!st || !ship) return <div className="skeleton" style={{ height: 300 }} />;
 
@@ -258,6 +263,8 @@ function SiteTexts() {
     const base_rates = Object.fromEntries(ship.rates.filter(([k, v]) => k.trim() && Number(v) > 0).map(([k, v]) => [k.trim(), Number(v)]));
     const { error } = await supabase.from('shipping_settings').update({
       free_shipping_threshold: Number(ship.free_shipping_threshold) || 0, flat_rate: ship.flat_rate === '' ? null : Number(ship.flat_rate), base_rates,
+      provider: ship.provider, hoko_stock_id: ship.hoko_stock_id === '' ? null : Number(ship.hoko_stock_id),
+      hoko_extra: Number(ship.hoko_extra) || 0, box_weight_g: Number(ship.box_weight_g) || 0, default_item_weight_g: Number(ship.default_item_weight_g) || 500,
     }).eq('id', true);
     if (error) return notify(friendlyError(error), 'error');
     invalidate();
@@ -317,9 +324,97 @@ function SiteTexts() {
           </div>
         ))}
         <button type="button" className="btn btn-outline btn-sm" onClick={() => setShip((s) => ({ ...s, rates: [...s.rates, ['', '']] }))}>Agregar tarifa</button>
+        <HokoSettings ship={ship} setShip={setShip} />
         <div className="form-actions"><button type="button" className="btn btn-green" onClick={saveShipping}>Guardar envíos</button></div>
       </section>
     </div>
+  );
+}
+
+/* ------------------------------------------------------------ Hoko (transportadora) */
+async function hokoAction(body) {
+  const { data, error } = await supabase.functions.invoke('shipping-quote', { body });
+  if (error) {
+    let msg = 'No pudimos conectar con Hoko.';
+    try { msg = (await error.context.json())?.error || msg; } catch { /* sin cuerpo */ }
+    throw new Error(msg);
+  }
+  return data;
+}
+
+function HokoSettings({ ship, setShip }) {
+  const { notify } = useToast();
+  const [busy, setBusy] = useState('');
+  const [test, setTest] = useState({ city: 'Bogotá', department: 'Bogotá D.C.', weight_g: 1000 });
+  const [result, setResult] = useState(null);
+  const set = (k) => (e) => setShip({ ...ship, [k]: e.target.value });
+  const run = async (name, body, done) => {
+    setBusy(name);
+    try { done(await hokoAction(body)); } catch (e) { notify(e.message, 'error'); } finally { setBusy(''); }
+  };
+
+  return (
+    <>
+      <h2 className="panel-title">Transportadora Hoko</h2>
+      <p className="muted small">
+        Con Hoko el envío se cotiza en vivo hacia la ciudad del cliente (pago a crédito, el flete lo paga la tienda) y se cobra la
+        transportadora más barata. Si Hoko no responde se usan las tarifas de arriba. El usuario y la contraseña van como secretos
+        (HOKO_EMAIL y HOKO_PASSWORD).
+      </p>
+      <div className="form-2">
+        <Field id="s-prov" label="Cálculo del envío">
+          <select id="s-prov" value={ship.provider} onChange={set('provider')}>
+            <option value="tarifas">Tarifas propias</option>
+            <option value="hoko">Cotizar con Hoko</option>
+          </select>
+        </Field>
+        <Field id="s-stock" label="ID del stock en Hoko" hint="El stock de tu bodega del Huila con el que se cotiza (ej. un producto “Caja Mercado Origen”).">
+          <input id="s-stock" inputMode="numeric" value={ship.hoko_stock_id} onChange={set('hoko_stock_id')} />
+        </Field>
+        <Field id="s-extra" label="Valor extra por envío (COP)" hint="Se suma al flete de Hoko: empaque, manejo. El total se redondea a la centena.">
+          <input id="s-extra" inputMode="numeric" value={ship.hoko_extra} onChange={set('hoko_extra')} />
+        </Field>
+        <Field id="s-box" label="Peso de la caja (g)" hint="Caja y relleno, se suma al peso de los productos.">
+          <input id="s-box" inputMode="numeric" value={ship.box_weight_g} onChange={set('box_weight_g')} />
+        </Field>
+        <Field id="s-defw" label="Peso por defecto de un producto (g)" hint="Para productos sin peso registrado.">
+          <input id="s-defw" inputMode="numeric" value={ship.default_item_weight_g} onChange={set('default_item_weight_g')} />
+        </Field>
+      </div>
+      <div className="form-actions">
+        <button type="button" className="btn btn-outline btn-sm" disabled={!!busy}
+          onClick={() => run('sync', { action: 'sync_cities' }, (d) => notify(`${d.count} ciudades de Hoko sincronizadas`))}>
+          {busy === 'sync' ? 'Sincronizando…' : 'Sincronizar ciudades de Hoko'}
+        </button>
+      </div>
+      <p className="muted small">Cotización de prueba (guarda primero el ID del stock):</p>
+      <div className="badge-row">
+        <input aria-label="Ciudad" value={test.city} onChange={(e) => setTest({ ...test, city: e.target.value })} placeholder="Ciudad" />
+        <input aria-label="Departamento" value={test.department} onChange={(e) => setTest({ ...test, department: e.target.value })} placeholder="Departamento" />
+        <input aria-label="Peso en gramos" inputMode="numeric" value={test.weight_g} onChange={(e) => setTest({ ...test, weight_g: e.target.value })} placeholder="Gramos" />
+        <button type="button" className="btn btn-outline btn-sm" disabled={!!busy} onClick={() => run('test', { action: 'test', ...test }, setResult)}>
+          {busy === 'test' ? 'Cotizando…' : 'Cotizar'}
+        </button>
+      </div>
+      {result && (
+        <div className="table-wrap">
+          <p className="muted small">Ciudad Hoko #{result.city_id} · caja {result.box.length}×{result.box.width}×{result.box.height} cm · {result.box.weight} kg · declarado {money(result.declared_value)}</p>
+          {result.options.length === 0 ? <p className="muted small">Ninguna transportadora disponible para ese destino.</p> : (
+            <table className="table">
+              <thead><tr><th>Transportadora</th><th className="num">Flete</th><th className="num">Cliente paga</th><th>Días</th></tr></thead>
+              <tbody>
+                {[...result.options].sort((a, b) => a.freight - b.freight).map((o) => (
+                  <tr key={o.courier_id}>
+                    <td>{o.courier_name}</td><td className="num">{money(o.freight)}</td>
+                    <td className="num">{money(Math.ceil((Number(o.freight) + Number(result.extra || 0)) / 100) * 100)}</td><td>{o.days}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      )}
+    </>
   );
 }
 

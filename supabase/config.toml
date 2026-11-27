@@ -452,6 +452,11 @@ verify_jwt = false
 [functions.wompi-webhook]
 verify_jwt = false
 
+# Resumen del checkout con el envío de Hoko: también lo usa el invitado.
+# Las acciones de admin validan la sesión por su cuenta.
+[functions.shipping-quote]
+verify_jwt = false
+
 # Lo llama pg_cron con EMAIL_CRON_SECRET (no es un JWT); valida su propia llave.
 [functions.send-emails]
 verify_jwt = false

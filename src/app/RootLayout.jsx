@@ -10,6 +10,7 @@ import { getLenis, useSmoothScroll } from '../lib/motion.js';
 import { removeBoot } from '../lib/boot.js';
 import { ChristmasLayer } from '../features/xmas/Christmas.jsx';
 import { ConsentGate } from '../features/auth/ConsentGate.jsx';
+import { WelcomeWheel } from '../features/wheel/WelcomeWheel.jsx';
 
 // Al cambiar de ruta (sin #ancla) la página empieza arriba, como una navegación normal.
 function useScrollReset() {
@@ -46,6 +47,7 @@ export default function RootLayout() {
       <MobileBar />
       <Toast />
       <ConsentGate />
+      <WelcomeWheel />
       <RecommendationsSync />
       <ChristmasLayer />
     </>

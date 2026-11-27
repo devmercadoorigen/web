@@ -34,7 +34,17 @@ function Summary({ quote, lines, loading, coupon, setCoupon, applyCoupon, remove
         <input id="co-coupon" value={coupon} onChange={(e) => setCoupon(e.target.value.toUpperCase())} placeholder="Cupón de descuento" autoComplete="off" autoCapitalize="characters" />
         <button type="submit" className="btn btn-outline btn-sm" disabled={!coupon.trim()}>Aplicar</button>
       </form>
-      {quote?.coupon && (
+      {quote?.coupon?.auto && (
+        <p className={`co-prize${quote.coupon.ok ? '' : ' pending'}`} role="status">
+          <span className="co-prize-ico" aria-hidden="true">🎁</span>
+          <span>
+            <b>{quote.coupon.ok ? 'Premio de la ruleta aplicado' : 'Tu premio de la ruleta'}</b>
+            {(quote.coupon.description || '').replace(/^Ruleta de bienvenida:\s*/, '')}
+            {!quote.coupon.ok && <small>{quote.coupon.message}</small>}
+          </span>
+        </p>
+      )}
+      {quote?.coupon && !quote.coupon.auto && (
         <p className={`co-coupon-msg${quote.coupon.ok ? ' ok' : ' err'}`} role="status">
           {quote.coupon.ok ? <><Icon name="check" size={16} stroke={2.6} />Cupón {quote.coupon.code} aplicado</> : quote.coupon.message}
           <button type="button" className="link-btn" onClick={removeCoupon}>Quitar</button>
@@ -44,7 +54,7 @@ function Summary({ quote, lines, loading, coupon, setCoupon, applyCoupon, remove
       <dl className={`totals${loading ? ' is-loading' : ''}`}>
         <dt>Subtotal</dt><dd>{quote ? money(quote.subtotal) : '…'}</dd>
         {quote?.discount > 0 && (<><dt>Descuento</dt><dd className="ok">−{money(quote.discount)}</dd></>)}
-        <dt>Envío</dt><dd>{!quote ? '…' : quote.shipping ? money(quote.shipping) : 'Gratis'}</dd>
+        <dt>Envío</dt><dd>{!quote ? '…' : quote.shipping_pending ? 'Según tu ciudad' : quote.shipping ? money(quote.shipping) : 'Gratis'}</dd>
         <dt className="total">Total</dt><dd className="total">{quote ? money(quote.total) : '…'}</dd>
       </dl>
       {quote && quote.shipping > 0 && quote.subtotal < quote.free_shipping_threshold && (
@@ -112,7 +122,7 @@ export default function CheckoutPage() {
 
   // Resumen del servidor: se recalcula al cambiar carrito, cupón o ciudad.
   const quoteQ = useQuery({
-    queryKey: ['quote', itemsPayload, applied, shipAddr.city, shipAddr.department],
+    queryKey: ['quote', user?.id ?? null, itemsPayload, applied, shipAddr.city, shipAddr.department],
     enabled: itemsPayload.length > 0,
     placeholderData: keepPreviousData,
     staleTime: 15_000,
@@ -294,7 +304,7 @@ export default function CheckoutPage() {
                   )}
                 </div>
               )}
-              <p className="ship-note"><Icon name="truck" size={18} />Consolidamos tu pedido en el Huila y lo despachamos en una sola caja.</p>
+              <p className="ship-note"><Icon name="truck" size={18} />Consolidamos tu pedido en el Huila y lo despachamos en una sola caja.{quote?.shipping_info?.days && <> Llega en {quote.shipping_info.days} días hábiles{quote.shipping_info.courier ? ` con ${quote.shipping_info.courier}` : ''}.</>}</p>
             </section>
 
             <section className="panel co-step" aria-labelledby="co-s3">

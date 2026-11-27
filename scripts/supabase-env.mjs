@@ -5,6 +5,7 @@
 // Fuentes:
 //   .env (raíz)              -> WOMPI_TEST_*, WOMPI_PROD_* (llaves de Wompi)
 //   supabase/functions/.env  -> SITE_URL, ALLOWED_ORIGINS, RESEND_*, EMAIL_CRON_SECRET
+//   .env (raíz) también puede traer RESEND_* y HOKO_* (allí tienen prioridad)
 // Las variables VITE_* nunca se suben (son del navegador). Los valores nunca se imprimen:
 // se escriben en un archivo temporal con permisos 600 que se borra al terminar.
 import { spawnSync } from 'node:child_process';
@@ -47,7 +48,7 @@ for (const [k, v] of Object.entries(fns)) {
   if (v && !k.startsWith('VITE_') && !k.startsWith('WOMPI_')) env[k] = v;
 }
 // Resend también puede vivir en el .env raíz (allí tiene prioridad).
-for (const k of ['RESEND_API_KEY', 'RESEND_FROM', 'RESEND_REPLY_TO']) {
+for (const k of ['RESEND_API_KEY', 'RESEND_FROM', 'RESEND_REPLY_TO', 'HOKO_EMAIL', 'HOKO_PASSWORD', 'HOKO_API_URL']) {
   if (root[k]) env[k] = root[k];
 }
 // En la nube la tienda vive en el dominio real: nunca se sube una URL de localhost.
@@ -83,6 +84,7 @@ try {
   const args = mode === 'push'
     ? ['supabase', 'secrets', 'set', '--env-file', file]
     : ['supabase', 'functions', 'serve', '--env-file', file];
+  args.push(...process.argv.slice(3)); // p. ej. npm run secrets:push -- --yes
   console.log(`\n${mode === 'push' ? 'Subiendo' : 'Usando'} ${Object.keys(env).length} secretos: ${Object.keys(env).join(', ')}\n`);
   const r = spawnSync('npx', args, { stdio: 'inherit', shell: process.platform === 'win32' });
   process.exitCode = r.status ?? 1;

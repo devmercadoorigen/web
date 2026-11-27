@@ -13,6 +13,14 @@ import { adminFn } from './AmbassadorsAdmin.jsx';
 import { ACTION, ENTITY } from './Dashboard.jsx';
 
 /* ------------------------------------------------------------ Cupones y boletín */
+// Tipos de cupón. En 2x1 y artículo gratis el valor es el tope del descuento; envío gratis no lleva valor.
+const COUPON_TYPES = [['porcentaje', 'Porcentaje'], ['valor', 'Valor fijo (COP)'], ['envio_gratis', 'Envío gratis'], ['dos_por_uno', '2x1 en alimentos'], ['articulo_gratis', '1 artículo gratis']];
+const couponValue = (c) => ({
+  porcentaje: `${c.value}%`,
+  envio_gratis: 'Envío gratis',
+  dos_por_uno: `2x1 (hasta ${money(c.value)})`,
+  articulo_gratis: `Artículo gratis (hasta ${money(c.value)})`,
+})[c.type] ?? money(c.value);
 const COUPON_EMPTY = { code: '', description: '', type: 'porcentaje', value: '', min_order: '0', max_uses: '', max_uses_per_customer: '1', first_purchase_only: false, starts_at: '', expires_at: '', is_active: true };
 
 export function CouponsPage() {
@@ -44,7 +52,7 @@ function Coupons() {
   });
   const save = async () => {
     setErr('');
-    const v = Number(edit.value);
+    const v = edit.type === 'envio_gratis' ? 1 : Number(edit.value);
     if (!/^[A-Z0-9-]{3,30}$/.test(edit.code)) return setErr('El código lleva de 3 a 30 letras, números o guiones.');
     if (!(v > 0) || (edit.type === 'porcentaje' && v > 100)) return setErr(edit.type === 'porcentaje' ? 'El porcentaje va de 1 a 100.' : 'Escribe el valor del descuento.');
     const row = {
@@ -69,7 +77,7 @@ function Coupons() {
         empty="Aún no hay cupones."
         columns={[
           { key: 'code', label: 'Código', sort: 'code', render: (c) => <button type="button" className="link-btn" onClick={() => setEdit({ ...COUPON_EMPTY, ...c, description: c.description || '', value: String(c.value), min_order: String(c.min_order), max_uses: c.max_uses ? String(c.max_uses) : '', max_uses_per_customer: String(c.max_uses_per_customer), starts_at: c.starts_at?.slice(0, 10) || '', expires_at: c.expires_at?.slice(0, 10) || '' })}>{c.code}</button> },
-          { key: 'value', label: 'Descuento', render: (c) => (c.type === 'porcentaje' ? `${c.value}%` : money(c.value)) },
+          { key: 'value', label: 'Descuento', render: (c) => <>{couponValue(c)}{c.owner_user_id && <span className="pill pill-mute" style={{ marginLeft: 6 }}>Ruleta</span>}</> },
           { key: 'rules', label: 'Condiciones', render: (c) => <span className="small">{[c.min_order ? `desde ${money(c.min_order)}` : null, c.first_purchase_only ? 'primera compra' : null, `${c.max_uses_per_customer} por cliente`].filter(Boolean).join(' · ')}</span> },
           { key: 'uses', label: 'Usos', sort: 'uses', className: 'num', render: (c) => `${c.uses}${c.max_uses ? ` / ${c.max_uses}` : ''}` },
           { key: 'expires_at', label: 'Vence', sort: 'expires_at', render: (c) => (c.expires_at ? longDate(c.expires_at) : 'No vence') },
@@ -82,8 +90,8 @@ function Coupons() {
             <FormNotice>{err}</FormNotice>
             <div className="form-2">
               <Field id="cp-code" label="Código"><input id="cp-code" value={edit.code} onChange={set('code')} placeholder="ORIGEN10" autoCapitalize="characters" /></Field>
-              <Field id="cp-type" label="Tipo"><select id="cp-type" value={edit.type} onChange={set('type')}><option value="porcentaje">Porcentaje</option><option value="valor">Valor fijo (COP)</option></select></Field>
-              <Field id="cp-value" label={edit.type === 'porcentaje' ? 'Porcentaje' : 'Valor (COP)'}><input id="cp-value" inputMode="numeric" value={edit.value} onChange={set('value')} /></Field>
+              <Field id="cp-type" label="Tipo"><select id="cp-type" value={edit.type} onChange={set('type')}>{COUPON_TYPES.map(([v, l]) => <option key={v} value={v}>{l}</option>)}</select></Field>
+              {edit.type !== 'envio_gratis' && <Field id="cp-value" label={edit.type === 'porcentaje' ? 'Porcentaje' : edit.type === 'valor' ? 'Valor (COP)' : 'Tope del descuento (COP)'}><input id="cp-value" inputMode="numeric" value={edit.value} onChange={set('value')} /></Field>}
               <Field id="cp-min" label="Compra mínima (COP)"><input id="cp-min" inputMode="numeric" value={edit.min_order} onChange={set('min_order')} /></Field>
               <Field id="cp-max" label="Usos totales" optional hint="Vacío = sin límite"><input id="cp-max" inputMode="numeric" value={edit.max_uses} onChange={set('max_uses')} /></Field>
               <Field id="cp-per" label="Usos por cliente"><input id="cp-per" inputMode="numeric" value={edit.max_uses_per_customer} onChange={set('max_uses_per_customer')} /></Field>

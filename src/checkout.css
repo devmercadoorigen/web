@@ -58,6 +58,13 @@
 .co-coupon-msg { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 14px; font-weight: 800; }
 .co-coupon-msg.ok { color: var(--verde); }
 .co-coupon-msg.err { color: #B3261E; }
+/* Premio de la ruleta (se aplica solo) */
+.co-prize { display: flex; align-items: center; gap: 12px; margin: 0; padding: 12px 14px; border-radius: 16px; background: linear-gradient(120deg, var(--verde-50), var(--ocre-50)); border: 1.5px dashed var(--verde); font-size: 14px; line-height: 1.35; color: var(--ink); }
+.co-prize > span:last-child { display: grid; gap: 2px; }
+.co-prize b { color: var(--verde-800); font-weight: 900; }
+.co-prize small { color: var(--ink-2); font-weight: 700; }
+.co-prize.pending { border-color: var(--ocre-600); }
+.co-prize-ico { font-size: 24px; flex-shrink: 0; }
 .co-coupon-msg .link-btn { margin-left: auto; font-size: 13.5px; }
 .totals .ok { color: var(--verde); }
 .totals.is-loading dd { opacity: 0.5; transition: opacity 0.2s; }
