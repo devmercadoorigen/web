@@ -17,6 +17,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { fixStories } from './lib/story-fixes.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const csvPath = process.argv[2] || path.join(root, 'private', 'embajadores.csv');
@@ -142,12 +143,14 @@ for (const { r, code } of people) {
   const instagram = 'instagram' in o ? o.instagram : social(r[C.instagram], 'instagram');
   const facebook = 'facebook' in o ? o.facebook : social(r[C.facebook], 'facebook');
   const website = 'website' in o ? o.website : (clean(r[C.web]) ? stripTracking(clean(r[C.web])) : null);
+  // Ortografía de las historias: scripts/lib/story-fixes.mjs
+  const s = fixStories(code, { origin: story(r[C.origin]), present: story(r[C.present]), future: story(r[C.future]) });
 
   pub.push(`insert into public.ambassadors (code, brand_name, municipality_id, short_description, story_origin, story_present, story_future, instagram, facebook, website, status)
 select ${q(code)}, ${q(brand)}, m.id, ${q(o.short || null)},
-  ${q(story(r[C.origin]))},
-  ${q(story(r[C.present]))},
-  ${q(story(r[C.future]))},
+  ${q(s.origin)},
+  ${q(s.present)},
+  ${q(s.future)},
   ${q(instagram)}, ${q(facebook)}, ${q(website)}, 'activo'
 from public.municipalities m where m.name = ${q(clean(r[C.muni]))};
 `);

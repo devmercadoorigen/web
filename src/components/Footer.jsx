@@ -75,6 +75,7 @@ export function Footer() {
         <div className="foot-bottom">
           <span>© 2026 Mercado Origen · Huila, Colombia{XMAS && <> · <span className="xm-greet">¡Feliz Navidad y próspero 2027!</span></>}</span>
           <span><Link to="/tratamiento-de-datos">Tratamiento de datos</Link> · <Link to="/tratamiento-de-datos">Privacidad</Link> · <a href="https://www.sic.gov.co" target="_blank" rel="noreferrer">SIC</a></span>
+          <span className="foot-credit">Desarrollado por <a href="https://www.automindco.com/" target="_blank" rel="noopener">Automind</a></span>
         </div>
       </div>
     </footer>
